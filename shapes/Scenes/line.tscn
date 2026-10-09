@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://36wf5vamjqsw"]
+
+[ext_resource type="Script" uid="uid://mw2gavgs31jk" path="res://Scripts/line.gd" id="1_syjhi"]
+
+[node name="Line" type="Node2D" unique_id=1634272210]
+script = ExtResource("1_syjhi")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1832826413]
+offset_left = -5.0
+offset_top = -80.0
+offset_right = 5.0
+offset_bottom = 120.0
