@@ -24,10 +24,11 @@ const DIAG_EARLY_WINDOW := 0.3    # kui mitu sekundit varem tehtud liigutust vee
 
 @export_group("Elud")
 @export var max_health := 100.0
-@export var health_recover_rate := 5.0        # elu taastub sekundis, kui oled õigel rajal
-@export var health_drain_rate := 50.0          # elu kaob sekundis, kui oled valel rajal
-@export var transition_heal := 5.0            # elu juurde 100% diagonaali/hüppe eest
-@export var transition_damage := 20.0          # elu maha 0% diagonaali/hüppe eest
+@export var health_recover_rate := 5.0         # elu taastub sekundis, kui nõel on joonel
+@export var health_drain_rate := 50.0          # suurim elu kadu sekundis (kui nõel on drain_full_px kaugusel)
+@export var line_half_width := 1               # joon on 3 px: keskmine + 1 px mõlemale poole
+@export var needle_slack := 1                  # lisatolerants px (tweeni ja muusika aja väike erinevus)
+@export var drain_full_px := 10                # mitme px kaugusel joonest kaob elu täiskiirusel
 
 @export_group("Paigutus (pikslites)")
 @export var play_width := 209                  # mänguala laius (paremal on score ja elud)
@@ -47,7 +48,7 @@ const DIAG_EARLY_WINDOW := 0.3    # kui mitu sekundit varem tehtud liigutust vee
 @onready var track: Node2D = $Track
 @onready var player = $Player
 @onready var judge_label: Label = $JudgeLabel
-@onready var health_bar: ProgressBar = get_node_or_null("HealthBar")
+@onready var health_bar: Range = get_node_or_null("%HealthBar")
 
 var segments: Array = []   # iga joonelõik: {start, end, lane, rect}
 var speed_points: Array = []  # kiiruse muutused: {t, speed, dist}
@@ -308,6 +309,8 @@ func build_track(chart: Dictionary) -> void:
 		# (bottom on ekraanil all = varasem aeg, top on ülal = hilisem aeg)
 		seg["hit_start"] = time_at_dist(-bottom)
 		seg["hit_end"] = time_at_dist(-top)
+		# Mis üleminek viib sellele lõigule ("", "diag" või "hop") – elude arvutamiseks
+		seg["trans_in"] = trans_kind[i - 1] if i > 0 else ""
 
 	# 5) Üleminekute hindamine: ideaalne hetk liikumise alustamiseks on see,
 	#    kui sirge joon löögijoonel lõpeb. Diagonaali peab läbima tweeniga
@@ -384,21 +387,58 @@ func _process(delta: float) -> void:
 		if player.lane == seg["lane"]:
 			on_current_line += delta
 			score += 100.0 * delta
-			current_health = minf(current_health + health_recover_rate * delta, max_health)
 			show_status("Joonel!")
 		else:
-			current_health -= health_drain_rate * delta
 			show_status("Mööda!")
-			if current_health <= 0.0:
-				current_health = 0.0
-				game_over()
-
-		if health_bar:
-			health_bar.value = current_health
 
 		# Joon muutub punasest roheliseks vastavalt sellele, kui suure osa ajast olid joonel
 		var ratio := on_current_line / total_current_line
 		seg["rect"].modulate = LINE_HIT_miss.lerp(LINE_HIT_COLOR, ratio)
+
+	# Elud: nõela kaugus joone keskpunktist (ka diagonaalide ajal)
+	update_health(delta, t)
+
+
+## Kus on joone keskpunkt löögijoonel ajal t (x pikslites)?
+## Tagastab NAN, kui löögijoonel pole praegu joont (enne algust, pausis või lõpus).
+func line_x_at(t: float) -> float:
+	if current >= segments.size():
+		return NAN
+	var seg: Dictionary = segments[current]
+	if seg["hit_start"] <= t:
+		return lane_x(seg["lane"])   # sirge joon (ka kohe pärast hüpet)
+	if current > 0 and seg["trans_in"] == "diag":
+		var prev: Dictionary = segments[current - 1]
+		if t >= prev["hit_end"]:
+			# Diagonaal on 45°: joone x liigub sama palju, kui rada alla liigub
+			var d0 := dist_at(prev["hit_end"])
+			var d1 := dist_at(seg["hit_start"])
+			var f := clampf((dist_at(t) - d0) / maxf(d1 - d0, 1.0), 0.0, 1.0)
+			return lerpf(lane_x(prev["lane"]), lane_x(seg["lane"]), f)
+	return NAN
+
+
+## Elud nõela ja joone kauguse järgi.
+## Nõel on 1 px, joon 3 px. Kui nõel on joone sees (keskelt kuni line_half_width
+## + needle_slack px), taastuvad elud. Kaugemal kaovad elud seda kiiremini,
+## mida suurem on viga, ja drain_full_px kaugusel täiskiirusel.
+func update_health(delta: float, t: float) -> void:
+	var lx := line_x_at(t)
+	if is_nan(lx):
+		return   # löögijoonel pole joont, elud ei muutu
+	var needle_x := roundi(player.position.x)
+	var err := absi(needle_x - roundi(lx))
+	var ok := line_half_width + needle_slack
+	if err <= ok:
+		current_health = minf(current_health + health_recover_rate * delta, max_health)
+	else:
+		var k := clampf(float(err - ok) / float(drain_full_px), 0.0, 1.0)
+		current_health -= health_drain_rate * k * delta
+		if current_health <= 0.0:
+			current_health = 0.0
+			game_over()
+	if health_bar:
+		health_bar.value = current_health
 
 
 func show_status(text: String) -> void:
@@ -408,20 +448,12 @@ func show_status(text: String) -> void:
 	judge_label.text = "%s\nskoor %d   täpsus %d%%\n%s" % [text, int(score), int(accuracy), last_diag]
 
 
-## Diagonaal või järsk tükk sai hinde (0..1): värvi see ja muuda elusid.
-##   100% -> +transition_heal, 0% -> -transition_damage, vahepeal sujuvalt
-##   (vaikeseadetega 80% -> +4, 60% -> -2, 40% -> -8, 20% -> -14)
+## Diagonaal või järsk tükk sai hinde (0..1): värvi see hinde järgi.
+## (Elud arvutatakse nüüd pidevalt nõela kauguse järgi, vt update_health.)
 func grade_transition(tr: Dictionary, grade: float) -> void:
 	var node: Node2D = tr["node"]
 	if node:
 		node.modulate = LINE_HIT_miss.lerp(LINE_HIT_COLOR, grade)
-
-	var change := grade * transition_heal - (1.0 - grade) * transition_damage
-	current_health = clampf(current_health + change, 0.0, max_health)
-	if health_bar:
-		health_bar.value = current_health
-	if current_health <= 0.0:
-		game_over()
 
 
 ## Mängija alustas liikumist teisele rajale (player.gd saadab selle signaali).
