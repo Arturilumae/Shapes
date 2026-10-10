@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://cslxwqchcb20o" path="res://Scripts/game.gd" id="1_bo1nx"]
 [ext_resource type="Texture2D" uid="uid://b7cj6hdqv2fv5" path="res://Art/jooned.png" id="2_jjvhh"]
 [ext_resource type="PackedScene" uid="uid://dbkwdxovtqdhw" path="res://Scenes/player.tscn" id="3_8gbba"]
+[ext_resource type="Texture2D" uid="uid://cfyvhb8cv4ird" path="res://Art/joonedvol2t.png" id="3_d1ilt"]
 [ext_resource type="AudioStream" uid="uid://payvlo0xhfo7" path="res://levels/demo/tuljak1.ogg" id="3_jjvhh"]
 [ext_resource type="Texture2D" uid="uid://bsoddqumej7wl" path="res://Art/ghost-pull.png" id="4_344ge"]
 [ext_resource type="Texture2D" uid="uid://bppuq2ogwhtw6" path="res://Art/ghost-idle.png" id="4_hptm8"]
@@ -24,12 +25,12 @@ atlas = ExtResource("2_jjvhh")
 region = Rect2(128, 9, 55, 53)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6iyac"]
-atlas = ExtResource("2_jjvhh")
-region = Rect2(21, 87, 55, 3)
+atlas = ExtResource("3_d1ilt")
+region = Rect2(16, 83, 55, 7)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fdnlq"]
-atlas = ExtResource("2_jjvhh")
-region = Rect2(20, 59, 55, 3)
+atlas = ExtResource("3_d1ilt")
+region = Rect2(16, 68, 55, 7)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jkdf5"]
 atlas = ExtResource("4_hptm8")

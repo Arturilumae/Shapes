@@ -87,6 +87,7 @@ void fragment() {
 @export var lane_spacing := 52                 # kahe raja keskjoonte vahe = diagonaali samm
 @export var hit_line_y := 104                  # löögijoone (ja mängija) y
 @export var min_straight := 10                 # vähim sirge joon kahe ülemineku vahel
+@export var hop_gap := 3                       # mitu px enne hüppetüki keskjoont sirge joon lõpeb (hüppe sprite'i jaoks ruum)
 
 @export_group("Joone spritid")
 @export var line_straight: Texture2D           # sirge tükk, nt 3 px lai
@@ -479,10 +480,19 @@ func _spawn_straight_pieces(links: Array) -> int:
 		if bottom < top:
 			too_short += 1
 
+		# Nähtav tükk jätab hüppetüki ümber hop_gap px ruumi, et need ei kattuks.
+		# Hitbox ja ajastus (top/bottom) jäävad samaks.
+		var vis_top := top
+		var vis_bottom := bottom
+		if links[i]["kind"] == "hop":
+			vis_top += hop_gap
+		if i > 0 and links[i - 1]["kind"] == "hop":
+			vis_bottom -= hop_gap
+
 		var piece := StraightPiece.new()
 		piece.tex = line_straight
-		piece.height = maxi(0, bottom - top)
-		piece.position = Vector2(x, top)
+		piece.height = maxi(0, vis_bottom - vis_top)
+		piece.position = Vector2(x, vis_top)
 		track.add_child(piece)
 		if bottom > top:
 			add_geo(Vector2(x, top), Vector2(x, bottom))
