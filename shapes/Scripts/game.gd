@@ -118,6 +118,18 @@ func dist_at(t: float) -> float:
 	return p["dist"] + (t - p["t"]) * p["speed"]
 
 
+## Raja praegune kiirus px/s (mängija kasutab seda, et libiseda mööda diagonaali).
+func current_speed() -> float:
+	if speed_points.is_empty():
+		return scroll_speed
+	var p: Dictionary = speed_points[0]
+	for q in speed_points:
+		if q["t"] > song_time:
+			break
+		p = q
+	return p["speed"]
+
+
 ## Vastupidine: mis ajal on rada liikunud d pikslit.
 func time_at_dist(d: float) -> float:
 	var p: Dictionary = speed_points[0]
@@ -183,10 +195,9 @@ func build_track(chart: Dictionary) -> void:
 
 	var count := segments.size()
 
-	# 1) Diagonaalid raja vahetuste kohale.
-	#    Diagonaal on 45°: iga raja kohta täpselt lane_spacing pikslit alla.
-	#    Selle keskpunkt on raja vahetuse hetkel.
-	var trans_mid: Array = []    # raja vahetuse y (täisarv)
+	# 1) Leia raja vahetused. Diagonaal on 45°: iga raja kohta täpselt
+	#    lane_spacing pikslit alla. Selle keskpunkt on raja vahetuse hetkel.
+	var trans_mid: Array = []    # diagonaali keskpunkti y (täisarv)
 	var trans_half: Array = []   # pool diagonaali kõrgusest (0 = diagonaali pole)
 	for i in count:
 		trans_mid.append(0)
@@ -197,24 +208,43 @@ func build_track(chart: Dictionary) -> void:
 		var b: Dictionary = segments[i + 1]  # hilisem lõik (ekraanil ülal pool)
 		if a["lane"] == b["lane"] or absf(a["end"] - b["start"]) > 0.001:
 			continue
-
 		var jumped: int = absi(b["lane"] - a["lane"])
-		var y_mid := roundi(-dist_at(a["end"]))
-		var half := int(lane_spacing * jumped * 0.5)
-		trans_mid[i] = y_mid
-		trans_half[i] = half
+		trans_mid[i] = roundi(-dist_at(a["end"]))
+		trans_half[i] = int(lane_spacing * jumped * 0.5)
 
+	# 2) Kahe järjestikuse diagonaali vahele jääb vähemalt min_straight pikslit
+	#    sirget joont. Kui vahetused on liiga lähestikku, lükatakse hilisem edasi
+	#    ja selle aeg arvutatakse ümber, et hindamine klapiks sellega, mida näed.
+	var shifted := 0
+	for i in range(1, count):
+		if trans_half[i] == 0 or trans_half[i - 1] == 0:
+			continue
+		var limit: int = trans_mid[i - 1] - trans_half[i - 1] - min_straight - trans_half[i]
+		if trans_mid[i] > limit:
+			trans_mid[i] = limit
+			var new_t := time_at_dist(-limit)
+			segments[i]["end"] = new_t
+			segments[i + 1]["start"] = new_t
+			segments[i + 1]["end"] = maxf(segments[i + 1]["end"], new_t)
+			shifted += 1
+
+	# 3) Diagonaalide sõlmed
+	for i in count:
+		if trans_half[i] == 0:
+			continue
+		var a: Dictionary = segments[i]
+		var b: Dictionary = segments[i + 1]
 		var piece := DiagPiece.new()
 		piece.down_right = b["lane"] < a["lane"]   # hilisem rada vasakul => alla paremale
 		piece.tex = line_diag_right if piece.down_right else line_diag_left
-		piece.jumped = jumped
+		piece.jumped = absi(b["lane"] - a["lane"])
 		piece.step = lane_spacing
 		piece.color = LINE_COLOR
 		# Diagonaali nullpunkt on selle ülemine ots (hilisema raja keskjoon)
-		piece.position = Vector2(lane_x(b["lane"]), y_mid - half)
+		piece.position = Vector2(lane_x(b["lane"]), trans_mid[i] - trans_half[i])
 		track.add_child(piece)
 
-	# 2) Sirged tükid diagonaalide vahele
+	# 4) Sirged tükid diagonaalide vahele
 	var too_short := 0
 	for i in count:
 		var seg: Dictionary = segments[i]
@@ -235,8 +265,10 @@ func build_track(chart: Dictionary) -> void:
 		track.add_child(piece)
 		seg["rect"] = piece
 
+	if shifted > 0:
+		push_warning("%d raja vahetust nihutati edasi, sest need olid liiga lähestikku. Suurem kiirus (Scroll Speed või chart'i \"speeds\") hoiab need muusikaga täpsemalt koos." % shifted)
 	if too_short > 0:
-		push_warning("%d lõiku on diagonaalide jaoks liiga lühikesed. Suurenda kiirust (Scroll Speed või chart'i \"speeds\")." % too_short)
+		push_warning("%d lõiku on diagonaalide jaoks liiga lühikesed." % too_short)
 
 
 # ---------- Ajastus ----------
@@ -265,8 +297,6 @@ func _process(delta: float) -> void:
 
 	# Rada liigub tervete pikslite kaupa, siis ei lähe midagi taustaga nihkesse
 	track.position.y = roundi(hit_line_y + dist_at(t))
-	# Mängija on alati täpselt raja keskjoonel ja löögijoonel
-	player.position = Vector2(lane_x(player.lane), hit_line_y)
 
 	# Jäta vahele lõigud, mis on juba mööda läinud
 	while current < segments.size() and segments[current]["end"] <= t:
