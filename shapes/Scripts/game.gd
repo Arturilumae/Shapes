@@ -17,7 +17,7 @@ const FRAME := 1.0 / 60.0         # üks mängukaader (60 FPS)
 const DIAG_GRADES := [1.0, 1.0, 1.0, 0.8, 0.6, 0.4, 0.2]
 const DIAG_EARLY_WINDOW := 0.3    # kui mitu sekundit varem tehtud liigutust veel diagonaaliga seotakse
 
-@export var level_dir := "res://levels/demo/"  # kaust VÕI konkreetne .json fail
+@export var level_dir := "res://levels/demo/tuljak_chart.json"  # kaust VÕI konkreetne .json fail
 @export var scroll_speed := 110.0              # algkiirus px/s (chart'i "speeds" võib muuta)
 @export var audio_offset := 0.0                # mängija kalibreering sekundites
 @export var fill_gaps := 1.0                   # kuni nii mitme löögi pikkused vahed täidetakse
