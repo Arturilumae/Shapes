@@ -25,8 +25,9 @@ var song_end := 0.0        # viimase lõigu lõpp (kasutatakse, kui laulu pole)
 var playing := false
 var use_music := false     # kas aeg tuleb laulust või sisemisest kellast
 var score := 0.0
-var on_line_time := 0.0
 var total_line_time := 0.0
+var on_current_line := 0.0
+var total_current_line := 0.0
 
 
 func _ready() -> void:
@@ -152,25 +153,29 @@ func _process(delta: float) -> void:
 	# Jäta vahele lõigud, mis on juba mööda läinud
 	while current < segments.size() and segments[current]["end"] <= t:
 		current += 1
+		total_line_time += on_current_line/total_current_line
+		on_current_line = 0
+		total_current_line = 0
+		
 
 	# Kas mõni lõik on praegu löögijoonel?
 	if current < segments.size() and segments[current]["start"] <= t:
 		var seg: Dictionary = segments[current]
-		total_line_time += delta
+		total_current_line += delta
 		if player.lane == seg["lane"]:
-			on_line_time += delta
+			on_current_line += delta
 			score += 100.0 * delta
-			seg["rect"].color = LINE_HIT_COLOR
+			seg["rect"].color = (LINE_HIT_COLOR-LINE_HIT_miss)*(on_current_line/total_current_line)+LINE_HIT_miss
 			show_status("Joonel!")
 		else:
+			seg["rect"].color = (LINE_HIT_COLOR-LINE_HIT_miss)*(on_current_line/total_current_line)+LINE_HIT_miss
 			show_status("Mööda!")
-			seg["rect"].color = LINE_HIT_miss
 
 
 func show_status(text: String) -> void:
 	var accuracy := 0.0
 	if total_line_time > 0.0:
-		accuracy = on_line_time / total_line_time * 100.0
+		accuracy = total_line_time / current * 100.0
 	judge_label.text = "%s\nskoor %d   täpsus %d%%" % [text, int(score), int(accuracy)]
 
 
