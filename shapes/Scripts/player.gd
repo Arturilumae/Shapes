@@ -8,7 +8,7 @@ func _ready():
 	update_position(0,"hop")
 
 func _draw():
-	draw_circle(Vector2.ZERO, 30, Color.WHITE)
+	draw_circle(Vector2.ZERO, 5, Color.WHITE)
 
 
 func _process(delta):

@@ -1,21 +1,21 @@
 [gd_scene format=3 uid="uid://byl4173f3s6os"]
 
 [ext_resource type="Script" uid="uid://cslxwqchcb20o" path="res://Scripts/game.gd" id="1_bo1nx"]
-[ext_resource type="Texture2D" uid="uid://2kaclrrrybfu" path="res://Art/jooned.png" id="2_jjvhh"]
+[ext_resource type="Texture2D" uid="uid://bw70s16fqan5e" path="res://Art/jooned.png" id="2_jjvhh"]
 [ext_resource type="PackedScene" uid="uid://dbkwdxovtqdhw" path="res://Scenes/player.tscn" id="3_8gbba"]
 [ext_resource type="AudioStream" uid="uid://b8f4fsja3qxp2" path="res://levels/demo/tuljak1.ogg" id="3_jjvhh"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jjvhh"]
 atlas = ExtResource("2_jjvhh")
-region = Rect2(379, 63, 3, 19)
+region = Rect2(103, 39, 3, 53)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_kry3j"]
 atlas = ExtResource("2_jjvhh")
-region = Rect2(120, 69, 13, 11)
+region = Rect2(175, 79, 55, 53)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_21xkr"]
 atlas = ExtResource("2_jjvhh")
-region = Rect2(633, 65, 13, 11)
+region = Rect2(128, 9, 55, 53)
 
 [node name="Main" type="Node2D" unique_id=356827938]
 script = ExtResource("1_bo1nx")
