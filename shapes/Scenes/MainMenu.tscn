@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://cdskmsw07xeq5" path="res://Scripts/playButton.gd" id="3_xim88"]
 [ext_resource type="Texture2D" uid="uid://cdb0ly7lqkwbx" path="res://Art/text.png" id="4_koqhg"]
 [ext_resource type="FontFile" uid="uid://oxkynrojvw1d" path="res://Art/aseprite.otf" id="5_cmrfp"]
+[ext_resource type="AudioStream" uid="uid://q8o0f0jw3qck" path="res://maintheme.ogg" id="6_8um5k"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nvly8"]
 atlas = ExtResource("2_8um5k")
@@ -108,5 +109,10 @@ position = Vector2(32, 8)
 texture = SubResource("AtlasTexture_yf5fn")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1455518083]
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer" parent="." unique_id=1792576030]
+stream = ExtResource("6_8um5k")
+autoplay = true
+parameters/looping = false
 
 [connection signal="pressed" from="Camera2D/Sprite2D2/Button" to="Camera2D/Sprite2D2/Button" method="_on_pressed"]
