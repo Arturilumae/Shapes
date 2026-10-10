@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://bw70s16fqan5e" path="res://Art/jooned.png" id="2_jjvhh"]
 [ext_resource type="PackedScene" uid="uid://dbkwdxovtqdhw" path="res://Scenes/player.tscn" id="3_8gbba"]
 [ext_resource type="AudioStream" uid="uid://b8f4fsja3qxp2" path="res://levels/demo/tuljak1.ogg" id="3_jjvhh"]
+[ext_resource type="Texture2D" uid="uid://eanb0g7ken07" path="res://Art/taust.png" id="5_kry3j"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jjvhh"]
 atlas = ExtResource("2_jjvhh")
@@ -35,7 +36,12 @@ offset_right = 40.0
 offset_bottom = 23.0
 
 [node name="HealthBar" type="ProgressBar" parent="." unique_id=167652639]
-offset_left = 5.0
-offset_top = 99.0
-offset_right = 305.0
-offset_bottom = 129.0
+offset_right = 47.0
+offset_bottom = 27.0
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1581122580]
+layer = -1
+
+[node name="Background" type="Sprite2D" parent="CanvasLayer" unique_id=938997297]
+position = Vector2(128, 72)
+texture = ExtResource("5_kry3j")
