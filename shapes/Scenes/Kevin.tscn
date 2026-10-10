@@ -1,0 +1,93 @@
+[gd_scene format=3 uid="uid://cr0gkhh1mqisa"]
+
+[ext_resource type="Texture2D" uid="uid://bwdwwdsfkikum" path="res://mainScreen.png" id="1_ivhji"]
+[ext_resource type="Texture2D" uid="uid://b7fqgyde3y3w7" path="res://buttons_500.png" id="2_ivhji"]
+[ext_resource type="Script" uid="uid://cdskmsw07xeq5" path="res://Scripts/playButton.gd" id="4_21uh7"]
+[ext_resource type="FontFile" uid="uid://oxkynrojvw1d" path="res://aseprite.otf" id="4_ivhji"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nvly8"]
+atlas = ExtResource("2_ivhji")
+region = Rect2(210, 295, 310, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0msvk"]
+atlas = ExtResource("2_ivhji")
+region = Rect2(210, 145, 310, 95)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nyimn"]
+atlas = ExtResource("2_ivhji")
+region = Rect2(205, 460, 310, 100)
+
+[node name="Main" type="Node2D" unique_id=356827938]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=192702384]
+
+[node name="Sprite2D2" type="Sprite2D" parent="Camera2D" unique_id=2083720919]
+texture_filter = 1
+texture = ExtResource("1_ivhji")
+
+[node name="Button" type="TextureButton" parent="Camera2D/Sprite2D2" unique_id=1410402240]
+offset_left = 229.0
+offset_top = -31.0
+offset_right = 539.0
+offset_bottom = 69.0
+texture_normal = SubResource("AtlasTexture_nvly8")
+texture_pressed = SubResource("AtlasTexture_0msvk")
+texture_hover = SubResource("AtlasTexture_nyimn")
+script = ExtResource("4_21uh7")
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="Camera2D/Sprite2D2/Button" unique_id=1086954044]
+texture_filter = 1
+layout_mode = 0
+offset_left = 40.0
+offset_top = 29.0
+offset_right = 280.0
+offset_bottom = 69.0
+theme_override_colors/font_color = Color(0.1955451, 0.1955451, 0.19554508, 1)
+theme_override_fonts/font = ExtResource("4_ivhji")
+theme_override_font_sizes/font_size = 40
+text = "Play game"
+
+[node name="Button2" type="TextureButton" parent="Camera2D/Sprite2D2" unique_id=257983640]
+offset_left = 229.0
+offset_top = 89.0
+offset_right = 539.0
+offset_bottom = 189.0
+texture_normal = SubResource("AtlasTexture_nvly8")
+texture_pressed = SubResource("AtlasTexture_0msvk")
+texture_hover = SubResource("AtlasTexture_nyimn")
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="Camera2D/Sprite2D2/Button2" unique_id=1146127398]
+texture_filter = 1
+layout_mode = 0
+offset_left = 63.0
+offset_top = 29.0
+offset_right = 246.0
+offset_bottom = 69.0
+theme_override_colors/font_color = Color(0.1955451, 0.1955451, 0.19554508, 1)
+theme_override_fonts/font = ExtResource("4_ivhji")
+theme_override_font_sizes/font_size = 40
+text = "Settings"
+
+[node name="Button3" type="TextureButton" parent="Camera2D/Sprite2D2" unique_id=1501913137]
+offset_left = 229.0
+offset_top = 212.0
+offset_right = 539.0
+offset_bottom = 312.0
+texture_normal = SubResource("AtlasTexture_nvly8")
+texture_pressed = SubResource("AtlasTexture_0msvk")
+texture_hover = SubResource("AtlasTexture_nyimn")
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="Camera2D/Sprite2D2/Button3" unique_id=1024813399]
+texture_filter = 1
+layout_mode = 0
+offset_left = 75.0
+offset_top = 29.0
+offset_right = 235.0
+offset_bottom = 69.0
+theme_override_colors/font_color = Color(0.1955451, 0.1955451, 0.19554508, 1)
+theme_override_fonts/font = ExtResource("4_ivhji")
+theme_override_font_sizes/font_size = 40
+text = "Credits"
