@@ -49,6 +49,7 @@ const DIAG_EARLY_WINDOW := 0.3    # kui mitu sekundit varem tehtud liigutust vee
 @onready var player = $Player
 @onready var judge_label: Label = $JudgeLabel
 @onready var health_bar: Range = get_node_or_null("%HealthBar")
+@onready var score_label: Label = get_node_or_null("%ScoreLabel")
 
 var segments: Array = []   # iga joonelõik: {start, end, lane, rect}
 var speed_points: Array = []  # kiiruse muutused: {t, speed, dist}
@@ -397,6 +398,8 @@ func _process(delta: float) -> void:
 
 	# Elud: nõela kaugus joone keskpunktist (ka diagonaalide ajal)
 	update_health(delta, t)
+	if score_label:
+		score_label.text = "%06d" % int(score)
 
 
 ## Kus on joone keskpunkt löögijoonel ajal t (x pikslites)?
@@ -445,7 +448,7 @@ func show_status(text: String) -> void:
 	var accuracy := 0.0
 	if acc_count > 0:
 		accuracy = acc_sum / acc_count * 100.0
-	judge_label.text = "%s\nskoor %d   täpsus %d%%\n%s" % [text, int(score), int(accuracy), last_diag]
+		judge_label.text = "täpsus %d%%\n%s" % [int(accuracy), last_diag]
 
 
 ## Diagonaal või järsk tükk sai hinde (0..1): värvi see hinde järgi.

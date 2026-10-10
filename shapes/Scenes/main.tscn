@@ -136,10 +136,6 @@ stream = ExtResource("3_jjvhh")
 offset_right = 40.0
 offset_bottom = 23.0
 
-[node name="HealthBar" type="ProgressBar" parent="." unique_id=167652639]
-offset_right = 47.0
-offset_bottom = 27.0
-
 [node name="BackGround" type="CanvasLayer" parent="." unique_id=1581122580]
 layer = -1
 
