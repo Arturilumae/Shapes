@@ -24,17 +24,17 @@ const DIAG_EARLY_WINDOW := 0.3    # kui mitu sekundit varem tehtud liigutust vee
 
 @export_group("Elud")
 @export var max_health := 100.0
-@export var health_recover_rate := 5.0         # elu taastub sekundis, kui nõel on joonel
-@export var health_drain_rate := 50.0          # suurim elu kadu sekundis (kui nõel on drain_full_px kaugusel)
+@export var health_recover_rate := 7.0        # elu taastub sekundis, kui nõel on joonel
+@export var health_drain_rate := 70.0          # suurim elu kadu sekundis (kui nõel on drain_full_px kaugusel)
 @export var line_half_width := 1               # joon on 3 px: keskmine + 1 px mõlemale poole
-@export var needle_slack := 1                  # lisatolerants px (tweeni ja muusika aja väike erinevus)
-@export var drain_full_px := 10                # mitme px kaugusel joonest kaob elu täiskiirusel
+@export var needle_slack := 5                  # lisatolerants px (tweeni ja muusika aja väike erinevus)
+@export var drain_full_px := 15                # mitme px kaugusel joonest kaob elu täiskiirusel
 
 @export_group("Paigutus (pikslites)")
 @export var play_width := 209                  # mänguala laius (paremal on score ja elud)
 @export var lane_x0 := 26                      # esimese raja keskjoone x
 @export var lane_spacing := 52                 # kahe raja keskjoonte vahe = diagonaali samm
-@export var hit_line_y := 102                  # löögijoone (ja mängija) y
+@export var hit_line_y := 120                  # löögijoone (ja mängija) y
 @export var min_straight := 10                 # vähim sirge joon kahe diagonaali vahel
 
 @export_group("Joone spritid")
@@ -50,7 +50,6 @@ const DIAG_EARLY_WINDOW := 0.3    # kui mitu sekundit varem tehtud liigutust vee
 @onready var judge_label: Label = $JudgeLabel
 @onready var health_bar: Range = get_node_or_null("%HealthBar")
 @onready var score_label: Label = get_node_or_null("%ScoreLabel")
-@onready var noel: AnimatedSprite2D = $kalle
 
 var segments: Array = []   # iga joonelõik: {start, end, lane, rect}
 var speed_points: Array = []  # kiiruse muutused: {t, speed, dist}

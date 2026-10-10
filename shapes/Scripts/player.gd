@@ -9,7 +9,7 @@ extends Node2D
 signal move_started(from_lane: int, to_lane: int, type: String)   # game.gd hindab selle järgi üleminekuid
 signal lane_changed(new_lane: int, type: String)                  # salvestaja kasutab: hindamise rada vahetus
 
-@export var hop_speed := 1500.0        # hüppe kiirus px/s (1500 => üks rada ~0,035 s ehk ~2 kaadrit)
+@export var hop_speed := 5000.0        # hüppe kiirus px/s (1500 => üks rada ~0,035 s ehk ~2 kaadrit)
 @export var anim_per_lane := 1.0       # mitu korda push/pull animatsioon ühe raja läbimise ajal läbi mängib
 
 const LANES = 4

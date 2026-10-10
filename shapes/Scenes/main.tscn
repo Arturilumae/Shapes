@@ -231,6 +231,7 @@ region = Rect2(214, 6, 27, 6)
 
 [node name="Main" type="Node2D" unique_id=356827938]
 script = ExtResource("1_bo1nx")
+needle_slack = 15
 line_straight = SubResource("AtlasTexture_ynf5e")
 line_diag_right = SubResource("AtlasTexture_hptm8")
 line_diag_left = SubResource("AtlasTexture_d1ilt")
