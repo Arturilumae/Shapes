@@ -26,9 +26,8 @@ const DIAG_EARLY_WINDOW := 0.3    # kui mitu sekundit varem tehtud liigutust vee
 @export var max_health := 100.0
 @export var health_recover_rate := 7.0        # elu taastub sekundis, kui nõel on joonel
 @export var health_drain_rate := 70.0          # suurim elu kadu sekundis (kui nõel on drain_full_px kaugusel)
-@export var line_half_width := 1               # joon on 3 px: keskmine + 1 px mõlemale poole
-@export var needle_slack := 5                  # lisatolerants px (tweeni ja muusika aja väike erinevus)
-@export var drain_full_px := 15                # mitme px kaugusel joonest kaob elu täiskiirusel
+@export var hitbox_radius := 1.0               # nõela ringi raadius px: 0 = nõel peab olema täpselt joone keskmisel pikslil, 1 = 3 px joone sees
+@export var drain_full_px := 15                # mitme px kaugusel ringi servast kaob elu täiskiirusel
 
 @export_group("Paigutus (pikslites)")
 @export var play_width := 209                  # mänguala laius (paremal on score ja elud)
@@ -43,6 +42,9 @@ const DIAG_EARLY_WINDOW := 0.3    # kui mitu sekundit varem tehtud liigutust vee
 @export var line_diag_left: Texture2D          # 45° diagonaal alla vasakule ↙ (55×55)
 @export var line_left: Texture2D               # järsk tükk vasakule (53×3)
 @export var line_right: Texture2D              # järsk tükk paremale (53×3)
+
+@export_group("Debug")
+@export var debug_hitbox := false              # näita ekraanil hitboxe ja tolerantse
 
 @onready var music = $Music          # AudioStreamPlayer või AudioStreamPlayer2D
 @onready var track: Node2D = $Track
@@ -67,6 +69,9 @@ var current_health := 0.0
 var transitions: Array = []   # diagonaalid: {t (ideaalne liikumise algus), from, to, done}
 var next_trans := 0           # esimene diagonaal, mis pole veel aegunud
 var last_diag := ""           # viimase diagonaali tulemus ekraanil
+var geo: Array = []           # joone keskjoon lõikudena raja koordinaatides: {a, b, ymin, ymax}
+var geo_idx := 0              # esimene geo-lõik, mis pole veel täielikult möödas
+var last_dist := INF          # viimati mõõdetud kaugus nõelast joone keskjooneni (debug jaoks)
 
 
 func _ready() -> void:
@@ -96,6 +101,12 @@ func _ready() -> void:
 	build_track(chart)
 	player.move_started.connect(_on_player_move_started)
 	queue_redraw()
+
+	if debug_hitbox:
+		var overlay := DebugOverlay.new()
+		overlay.game = self
+		overlay.z_index = 100   # kõige peal
+		add_child(overlay)
 	playing = true
 	if use_music:
 		music.play()
@@ -274,6 +285,7 @@ func build_track(chart: Dictionary) -> void:
 			hop.z_index = 1   # joonistatakse sirgete joonte peale, et ääred jääksid õigeks
 			track.add_child(hop)
 			trans_node[i] = hop
+			add_geo(Vector2(lane_x(a["lane"]), trans_mid[i]), Vector2(lane_x(b["lane"]), trans_mid[i]))
 			continue
 		var piece := DiagPiece.new()
 		piece.down_right = b["lane"] < a["lane"]   # hilisem rada vasakul => alla paremale
@@ -285,6 +297,9 @@ func build_track(chart: Dictionary) -> void:
 		piece.position = Vector2(lane_x(b["lane"]), trans_mid[i] - trans_half[i])
 		track.add_child(piece)
 		trans_node[i] = piece
+		# Diagonaali keskjoon: ülemine ots hilisemal rajal, alumine varasemal
+		add_geo(Vector2(lane_x(b["lane"]), trans_mid[i] - trans_half[i]),
+			Vector2(lane_x(a["lane"]), trans_mid[i] + trans_half[i]))
 
 	# 4) Sirged tükid diagonaalide vahele
 	var too_short := 0
@@ -306,6 +321,8 @@ func build_track(chart: Dictionary) -> void:
 		piece.position = Vector2(lane_x(seg["lane"]), top)
 		track.add_child(piece)
 		seg["rect"] = piece
+		if bottom > top:
+			add_geo(Vector2(lane_x(seg["lane"]), top), Vector2(lane_x(seg["lane"]), bottom))
 		# Hitbox = täpselt sirge tüki ulatus. Diagonaali ajal ei hinnata midagi.
 		# (bottom on ekraanil all = varasem aeg, top on ülal = hilisem aeg)
 		seg["hit_start"] = time_at_dist(-bottom)
@@ -327,6 +344,9 @@ func build_track(chart: Dictionary) -> void:
 			"node": trans_node[i],
 			"done": false,
 		})
+
+	# Geo-lõigud järjekorda: alumised (varasemad) enne
+	geo.sort_custom(func(p, q): return p["ymax"] > q["ymax"])
 
 	if shifted > 0:
 		push_warning("%d raja vahetust nihutati edasi, sest need olid liiga lähestikku. Suurem kiirus (Scroll Speed või chart'i \"speeds\") hoiab need muusikaga täpsemalt koos." % shifted)
@@ -421,21 +441,45 @@ func line_x_at(t: float) -> float:
 	return NAN
 
 
-## Elud nõela ja joone kauguse järgi.
-## Nõel on 1 px, joon 3 px. Kui nõel on joone sees (keskelt kuni line_half_width
-## + needle_slack px), taastuvad elud. Kaugemal kaovad elud seda kiiremini,
-## mida suurem on viga, ja drain_full_px kaugusel täiskiirusel.
+## Lisa joone keskjoone lõik (raja koordinaatides) elude arvutamiseks.
+func add_geo(a: Vector2, b: Vector2) -> void:
+	geo.append({"a": a, "b": b, "ymin": minf(a.y, b.y), "ymax": maxf(a.y, b.y)})
+
+
+## Lühim kaugus punktist c (raja koordinaatides) joone keskjooneni.
+## Vaadatakse ainult lõike, mis on c-le vertikaalselt piisavalt lähedal.
+func distance_to_line(c: Vector2) -> float:
+	var margin := hitbox_radius + drain_full_px
+	# Rada liigub üles, nii et täielikult allapoole jäänud lõike pole enam vaja
+	while geo_idx < geo.size() and geo[geo_idx]["ymin"] > c.y + margin:
+		geo_idx += 1
+	var best := INF
+	for i in range(geo_idx, geo.size()):
+		var s: Dictionary = geo[i]
+		if s["ymax"] < c.y - margin:
+			break   # see ja kõik järgmised on ringist kõrgemal
+		var p := Geometry2D.get_closest_point_to_segment(c, s["a"], s["b"])
+		best = minf(best, c.distance_to(p))
+	return best
+
+
+## Elud nõela hitbox-ringi järgi.
+## Ring (raadius hitbox_radius) on nõela otsas. Kui joone keskjoon on ringi sees,
+## taastuvad elud. Kui ei ole, kaovad elud seda kiiremini, mida kaugemal joon
+## ringi servast on, ja drain_full_px kaugusel täiskiirusel.
 func update_health(delta: float, t: float) -> void:
-	var lx := line_x_at(t)
-	if is_nan(lx):
-		return   # löögijoonel pole joont, elud ei muutu
-	var needle_x := roundi(player.position.x)
-	var err := absi(needle_x - roundi(lx))
-	var ok := line_half_width + needle_slack
-	if err <= ok:
+	if is_nan(line_x_at(t)):
+		last_dist = INF
+		return   # löögijoonel pole joont (paus, algus, lõpp), elud ei muutu
+	# Nõela 1 px ots raja koordinaatides (rada liigub ainult y suunas).
+	# Ümardatud täispikslini, sama ruudustik mis joone keskmisel pikslil.
+	var c: Vector2 = player.position.round() - track.position
+	var d := distance_to_line(c)
+	last_dist = d
+	if d <= hitbox_radius:
 		current_health = minf(current_health + health_recover_rate * delta, max_health)
 	else:
-		var k := clampf(float(err - ok) / float(drain_full_px), 0.0, 1.0)
+		var k := clampf((d - hitbox_radius) / float(drain_full_px), 0.0, 1.0)
 		current_health -= health_drain_rate * k * delta
 		if current_health <= 0.0:
 			current_health = 0.0
@@ -561,6 +605,31 @@ class DiagPiece extends Node2D:
 		for k in jumped:
 			var x := step * k if down_right else -step * (k + 1)
 			draw_texture(tex, Vector2(x - border, step * k - border))
+
+
+## Debug-vaade: ainult nõela hitbox-ring.
+##   Keskel 1 px täpp = nõela ots (ringi keskpunkt)
+##   Ring: roheline = joone keskmine piksel on ringi sees (elud taastuvad),
+##         punane   = väljas (elud kaovad)
+class DebugOverlay extends Node2D:
+	var game
+
+	func _process(_delta: float) -> void:
+		queue_redraw()
+
+	func _draw() -> void:
+		var g = game
+		var p: Vector2 = g.player.position.round()
+		var inside: bool = g.last_dist <= g.hitbox_radius
+		var col := Color(0, 1, 0, 0.6) if inside else Color(1, 0.3, 0.3, 0.6)
+		# Joonista iga piksel, mille keskpunkt on nõelast hitbox_radius kaugusel või lähemal.
+		# Täpselt need pikslid loetakse "ringi sees" olevaks.
+		var r: float = g.hitbox_radius
+		var n := ceili(r)
+		for dy in range(-n, n + 1):
+			for dx in range(-n, n + 1):
+				if Vector2(dx, dy).length() <= r:
+					draw_rect(Rect2(p + Vector2(dx, dy), Vector2.ONE), col)
 
 
 ## Järsk horisontaalne tükk raja vahetuse kohal (hüppe jaoks).
