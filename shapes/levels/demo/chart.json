@@ -19,9 +19,9 @@
 	{ "beat": 17.0, "lane": 1, "length": 0.5 },
 	{ "beat": 18.0, "lane": 2, "length": 0.5 },
 	{ "beat": 19.0, "lane": 3 , "length": 0.5},
-	{ "beat": 19.5, "lane": 1, "length": 0.5 },
-	{ "beat": 20.0, "lane": 2, "length": 0.5 },
-	{ "beat": 20.5, "lane": 1, "length": 0.5 },
-	{ "beat": 21.0, "lane": 3, "length": 0.5 }
+	{ "beat": 20.0, "lane": 1, "length": 0.5 },
+	{ "beat": 21.0, "lane": 2, "length": 0.5 },
+	{ "beat": 22.0, "lane": 1, "length": 0.5 },
+	{ "beat": 23.0, "lane": 3, "length": 0.5 }
   ]
 }
