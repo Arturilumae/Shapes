@@ -2,6 +2,9 @@ extends Node2D
 ## Joonemäng: chart määrab, millal ja millisele rajale joon alla tuleb.
 ## Kõik jooned ehitatakse ühe pika "Track" sõlme sisse ja liigub ainult Track,
 ## muusika aja järgi. Mängija peab olema samal rajal, kus joon löögijoonel on.
+##
+## Joon koosneb sirgetest tükkidest (raja peal) ja diagonaalidest (raja vahetusel).
+## Kui sprite'e pole määratud, joonistatakse lihtsad värvilised jooned.
 
 const LANES := 4
 const LINE_WIDTH := 30.0
@@ -9,7 +12,7 @@ const LINE_COLOR := Color("5dc8ff")
 const LINE_HIT_COLOR := Color("7dff8a")
 const LINE_HIT_miss := Color("84001dff")
 
-@export var level_dir := "res://levels/demo/"  # või nt "user://levels/minu_lugu"
+@export var level_dir := "res://levels/demo/"  # kaust VÕI konkreetne .json fail
 @export var scroll_speed := 300.0              # pikslit sekundis
 @export var audio_offset := 0.0                # mängija kalibreering sekundites
 
@@ -17,6 +20,14 @@ const LINE_HIT_miss := Color("84001dff")
 @export var max_health := 100.0
 @export var health_recover_rate := 15.0        # Mitu elu punkti taastub sekundis, kui oled õigel rajal
 @export var health_drain_rate := 50.0          # Mitu elu punkti kaotad sekundis, kui oled valel rajal
+
+
+@export_group("Joone spritid")
+@export var line_straight: Texture2D    # sirge tükk (joon läheb otse alla)
+@export var line_diag_right: Texture2D  # diagonaal, mis läheb alla paremale ↘
+@export var line_diag_left: Texture2D   # diagonaal, mis läheb alla vasakule ↙
+@export var line_scale := 1.0           # sprite'ide suurendus
+@export var diag_height := 0.0          # diagonaali kõrgus pikslites (0 = pildi kuju järgi)
 
 @onready var music = $Music          # AudioStreamPlayer või AudioStreamPlayer2D
 @onready var track: Node2D = $Track
@@ -39,7 +50,9 @@ var current_health := 0.0  # Mängija hetke elud
 
 
 func _ready() -> void:
-	var chart := load_chart(level_dir.path_join("chart.json"))
+	var chart_path := level_dir if level_dir.ends_with(".json") else level_dir.path_join("chart.json")
+	level_dir = chart_path.get_base_dir()
+	var chart := load_chart(chart_path)
 	if chart.is_empty():
 		return
 
@@ -75,6 +88,23 @@ func hit_y() -> float:
 
 func lane_x(lane: int) -> float:
 	return get_viewport_rect().size.x / LANES * (lane + 0.5)
+
+
+func line_width() -> float:
+	if line_straight:
+		return line_straight.get_width() * line_scale
+	return LINE_WIDTH
+
+
+func diag_height_for(lanes_jumped: int, tex: Texture2D) -> float:
+	if diag_height > 0.0:
+		return diag_height * lanes_jumped
+	var lane_dx := get_viewport_rect().size.x / LANES
+	var box_w := lanes_jumped * lane_dx + line_width()
+	if tex:
+		# Säilitame diagonaalpildi kuju (kõrguse ja laiuse suhte)
+		return box_w * tex.get_height() / tex.get_width()
+	return lanes_jumped * lane_dx * 0.5
 
 
 # ---------- Leveli laadimine ----------
@@ -130,6 +160,62 @@ func build_track(chart: Dictionary) -> void:
 		segments.append({"start": start, "end": end, "lane": lane, "rect": rect})
 		song_end = maxf(song_end, end)
 
+	var w := line_width()
+
+	# 1) Diagonaalid: kus kaks lõiku järgnevad vahetult ja rada muutub.
+	#    diag[i] = diagonaali kõrgus lõigu i ja i+1 vahel (0 = diagonaali pole).
+	var diag: Array = []
+	for i in segments.size():
+		diag.append(0.0)
+		if i + 1 >= segments.size():
+			continue
+		var a: Dictionary = segments[i]      # varasem lõik (ekraanil all pool)
+		var b: Dictionary = segments[i + 1]  # hilisem lõik (ekraanil ülal pool)
+		if a["lane"] == b["lane"] or absf(a["end"] - b["start"]) > 0.001:
+			continue
+
+		# Ülevalt alla vaadates: kui hilisem lõik on vasakul, läheb joon alla paremale
+		var down_right: bool = b["lane"] < a["lane"]
+		var tex: Texture2D = line_diag_right if down_right else line_diag_left
+		var jumped: int = absi(b["lane"] - a["lane"])
+		var d := diag_height_for(jumped, tex)
+		# Diagonaal ei tohi olla pikem kui kumbki naaberlõik
+		var len_a: float = (a["end"] - a["start"]) * scroll_speed
+		var len_b: float = (b["end"] - b["start"]) * scroll_speed
+		d = minf(d, minf(len_a, len_b))
+		diag[i] = d
+
+		var xa := lane_x(a["lane"])
+		var xb := lane_x(b["lane"])
+		var y_mid: float = -a["end"] * scroll_speed   # raja vahetuse hetk
+		var piece := DiagPiece.new()
+		piece.tex = tex
+		piece.color = LINE_COLOR
+		piece.line_w = w
+		piece.box = Vector2(absf(xb - xa) + w, d)
+		piece.bottom_left = xa < xb
+		piece.position = Vector2(minf(xa, xb) - w / 2, y_mid - d / 2)
+		track.add_child(piece)
+
+	# 2) Sirged tükid. Kus diagonaal algab või lõpeb, jääb sirge tükk poole võrra lühemaks.
+	for i in segments.size():
+		var seg: Dictionary = segments[i]
+		var y_top: float = -seg["end"] * scroll_speed
+		var y_bottom: float = -seg["start"] * scroll_speed
+		if i > 0:
+			y_bottom -= diag[i - 1] / 2
+		y_top += diag[i] / 2
+
+		var piece := StraightPiece.new()
+		piece.tex = line_straight
+		piece.color = LINE_COLOR
+		piece.line_w = w
+		piece.line_scale = line_scale
+		piece.height = maxf(0.0, y_bottom - y_top)
+		piece.position = Vector2(lane_x(seg["lane"]), y_top)
+		track.add_child(piece)
+		seg["rect"] = piece
+
 
 # ---------- Ajastus ----------
 func update_song_time(delta: float) -> void:
@@ -158,7 +244,9 @@ func _process(delta: float) -> void:
 	# Jäta vahele lõigud, mis on juba mööda läinud
 	while current < segments.size() and segments[current]["end"] <= t:
 		current += 1
-		if total_current_line > 0:
+
+		# Kaitse nulliga jagamise eest: lõik võis mööduda ühe kaadri vahel
+		if total_current_line > 0.0:
 			total_line_time += on_current_line / total_current_line
 		on_current_line = 0
 		total_current_line = 0
@@ -172,7 +260,6 @@ func _process(delta: float) -> void:
 			# Mängija on õigel rajal (HIT)
 			on_current_line += delta
 			score += 100.0 * delta
-			seg["rect"].color = (LINE_HIT_COLOR - LINE_HIT_miss) * (on_current_line / total_current_line) + LINE_HIT_miss
 			show_status("Joonel!")
 			
 			# Taastame elusid ja hoiame neid max_health piires
@@ -180,7 +267,6 @@ func _process(delta: float) -> void:
 			
 		else:
 			# Mängija on valel rajal (MISS)
-			seg["rect"].color = (LINE_HIT_COLOR - LINE_HIT_miss) * (on_current_line / total_current_line) + LINE_HIT_miss
 			show_status("Mööda!")
 			
 			# Kaotame elusid
@@ -194,11 +280,20 @@ func _process(delta: float) -> void:
 		# Uuendame UI eluderiba
 		if health_bar:
 			health_bar.value = current_health
+			show_status("Mööda!")
+			
+		# Joon muutub punasest roheliseks vastavalt sellele, kui suure osa ajast olid joonel
+		if seg["rect"] != null:
+			var ratio := on_current_line / total_current_line
+			seg["rect"].modulate = LINE_HIT_miss.lerp(LINE_HIT_COLOR, ratio)
+		# Joon muutub punasest roheliseks vastavalt sellele, kui suure osa ajast olid joonel
+		var ratio := on_current_line / total_current_line
+		seg["rect"].modulate = (LINE_HIT_COLOR - LINE_HIT_miss) * ratio + LINE_HIT_miss
 
 
 func show_status(text: String) -> void:
 	var accuracy := 0.0
-	if current > 0:
+	if total_line_time > 0.0 and current > 0:
 		accuracy = total_line_time / current * 100.0
 	judge_label.text = "%s\nskoor %d   täpsus %d%%" % [text, int(score), int(accuracy)]
 
@@ -223,3 +318,45 @@ func _draw() -> void:
 		var x := lane_x(lane)
 		draw_line(Vector2(x, 0), Vector2(x, height), Color(1, 1, 1, 0.15), 2)
 	draw_line(Vector2(0, hit_y()), Vector2(get_viewport_rect().size.x, hit_y()), Color(1, 1, 1, 0.4), 2)
+
+
+# ---------- Joone tükid ----------
+
+## Sirge tükk. Sprite korratakse ülevalt alla, et see sobiks iga pikkusega.
+class StraightPiece extends Node2D:
+	var tex: Texture2D
+	var color := Color.WHITE
+	var line_w := 30.0
+	var line_scale := 1.0
+	var height := 0.0
+
+	func _draw() -> void:
+		if tex == null:
+			draw_rect(Rect2(-line_w / 2, 0, line_w, height), color)
+			return
+		var tw := tex.get_width() * line_scale
+		var th := tex.get_height() * line_scale
+		var y := 0.0
+		while y < height - 0.01:
+			var h := minf(th, height - y)
+			draw_texture_rect_region(tex, Rect2(-tw / 2, y, tw, h),
+				Rect2(0, 0, tex.get_width(), h / line_scale))
+			y += th
+
+
+## Diagonaaltükk raja vahetuse kohal. Sprite venitatakse kasti suuruseks.
+class DiagPiece extends Node2D:
+	var tex: Texture2D
+	var color := Color.WHITE
+	var line_w := 30.0
+	var box := Vector2.ZERO
+	var bottom_left := false   # kas alumine ots (varasem rada) on vasakul
+
+	func _draw() -> void:
+		if tex:
+			draw_texture_rect(tex, Rect2(Vector2.ZERO, box), false)
+			return
+		var half := line_w / 2
+		var top_x := box.x - half if bottom_left else half
+		var bottom_x := half if bottom_left else box.x - half
+		draw_line(Vector2(top_x, 0), Vector2(bottom_x, box.y), color, line_w)
