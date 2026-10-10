@@ -34,7 +34,7 @@ const DIAG_EARLY_WINDOW := 0.3    # kui mitu sekundit varem tehtud liigutust vee
 @export var play_width := 209                  # mänguala laius (paremal on score ja elud)
 @export var lane_x0 := 26                      # esimese raja keskjoone x
 @export var lane_spacing := 52                 # kahe raja keskjoonte vahe = diagonaali samm
-@export var hit_line_y := 120                  # löögijoone (ja mängija) y
+@export var hit_line_y := 102                  # löögijoone (ja mängija) y
 @export var min_straight := 10                 # vähim sirge joon kahe diagonaali vahel
 
 @export_group("Joone spritid")
@@ -50,6 +50,7 @@ const DIAG_EARLY_WINDOW := 0.3    # kui mitu sekundit varem tehtud liigutust vee
 @onready var judge_label: Label = $JudgeLabel
 @onready var health_bar: Range = get_node_or_null("%HealthBar")
 @onready var score_label: Label = get_node_or_null("%ScoreLabel")
+@onready var noel: AnimatedSprite2D = $kalle
 
 var segments: Array = []   # iga joonelõik: {start, end, lane, rect}
 var speed_points: Array = []  # kiiruse muutused: {t, speed, dist}

@@ -4,9 +4,13 @@ extends Node2D
 ##
 ## Uus noolevajutus kirjutab käimasoleva liikumise üle: pall alustab uut
 ## liikumist sealt, kus ta parasjagu on.
+## Hüpe (Q/E) on sama libisemine, aga palju kiirem.
 
 signal move_started(from_lane: int, to_lane: int, type: String)   # game.gd hindab selle järgi üleminekuid
 signal lane_changed(new_lane: int, type: String)                  # salvestaja kasutab: hindamise rada vahetus
+
+@export var hop_speed := 1500.0        # hüppe kiirus px/s (1500 => üks rada ~0,035 s ehk ~2 kaadrit)
+@export var anim_per_lane := 1.0       # mitu korda push/pull animatsioon ühe raja läbimise ajal läbi mängib
 
 const LANES = 4
 var lane = 2           # rada hindamise jaoks = pallile lähim rada (alustab keskelt)
@@ -15,14 +19,11 @@ var moving = false     # kas tween käib
 var tween: Tween
 
 @onready var game = get_parent()
+@onready var noel: AnimatedSprite2D = $kalle
 
 
 func _ready():
 	position = target_pos(lane)
-
-
-func _draw():
-	draw_circle(Vector2.ZERO, 5, Color.WHITE)
 
 
 func _process(_delta):
@@ -47,7 +48,7 @@ func _unhandled_input(event):
 		start_move(-1)
 	elif event.is_action_pressed("ui_right"):
 		start_move(1)
-	# Hüpe: kohe teisele rajale, katkestab ka käimasoleva tweeni
+	# Hüpe: kiire libisemine teisele rajale
 	elif event.is_action_pressed("hop_left"):
 		hop(-1)
 	elif event.is_action_pressed("hop_right"):
@@ -79,16 +80,56 @@ func start_move(dir: int):
 		return   # ääres, kuhugi minna pole
 
 	move_started.emit(lane, new_target, "tween")
+	# Diagonaal on 45°, ehk pall peab liikuma külgsuunas sama kiiresti kui rada alla
+	slide_to(new_target, game.current_speed())
+
+
+func hop(dir: int):
+	if moving:
+		return   # hüpe ei katkesta käimasolevat liikumist
+	var new_target := clampi(lane + dir, 0, LANES - 1)
+	if new_target == lane:
+		return   # ääres
+
+	move_started.emit(lane, new_target, "hop")
+	# Sama libisemine nagu diagonaalil, aga hop_speed kiirusega
+	slide_to(new_target, hop_speed)
+
+
+## Animatsiooni pikkus sekundites (kõigi kaadrite kestus kokku FPS järgi).
+func anim_length(anim: String) -> float:
+	var frames := noel.sprite_frames
+	if frames == null or not frames.has_animation(anim):
+		return 0.0
+	var total := 0.0
+	for i in frames.get_frame_count(anim):
+		total += frames.get_frame_duration(anim, i)
+	return total / maxf(frames.get_animation_speed(anim), 0.001)
+
+
+## Libista pall rajale `target` kiirusega `speed` (px/s).
+## Kestus arvutatakse järelejäänud vahemaa järgi, nii et ka katkestatud
+## liikumine jätkub sama kiirusega.
+func slide_to(target: int, speed: float):
 	if tween:
 		tween.kill()
-	target_lane = new_target
+	target_lane = target
 	moving = true
 
-	# Diagonaal on 45°, ehk pall peab liikuma külgsuunas sama kiiresti kui rada alla.
-	# Kestus arvutatakse järelejäänud vahemaa järgi, nii et ka katkestatud
-	# liikumine jätkub sama kiirusega.
+	var heading := signf(target_pos(target_lane).x - position.x)
+	var anim := "push" if heading > 0 else "pull"
+
+	# Animatsiooni kiirus liikumise kiiruse järgi: ühe raja läbimise ajal
+	# mängib animatsioon anim_per_lane korda läbi (hüppel seega väga kiiresti)
+	var lane_time: float = game.lane_spacing / maxf(speed, 1.0)
+	var length := anim_length(anim)
+	noel.speed_scale = length / lane_time * anim_per_lane if length > 0.0 else 1.0
+	# Kui sama animatsioon juba mängib (nool all hoides), jätkub see katkematult
+	if noel.animation != anim or not noel.is_playing():
+		noel.play(anim)
+
 	var distance := absf(target_pos(target_lane).x - position.x)
-	var duration := distance / maxf(game.current_speed(), 1.0)
+	var duration := distance / maxf(speed, 1.0)
 
 	tween = create_tween()
 	tween.tween_property(self, "position", target_pos(target_lane), duration)
@@ -100,29 +141,13 @@ func _on_move_done():
 	position = target_pos(target_lane)
 	set_lane(target_lane, "tween")
 
-
-func hop(dir: int):
-	if moving == true:
+	# Nool on endiselt all: jätka kohe järgmisele rajale, ilma vahepealse idle'ita
+	if Input.is_action_pressed("ui_left") and lane > 0:
+		start_move(-1)
 		return
-	var new_target: int
-	if moving:
-		# Hüpe käimasoleva liikumise ajal ei lisa vahemaad juurde:
-		# samas suunas = lõpeta liikumine hüppega (maandub sihtrajale),
-		# vastassuunas = hüppa ühe raja võrra pallile lähimast rajast
-		var heading := signf(target_pos(target_lane).x - position.x)
-		if signf(dir) == heading:
-			new_target = target_lane
-		else:
-			new_target = clampi(lane + dir, 0, LANES - 1)
-	else:
-		new_target = clampi(lane + dir, 0, LANES - 1)
-	if new_target == lane:
-		return   # ääres, või pall on juba sihtrajal (hindamise rada on juba vahetunud)
+	if Input.is_action_pressed("ui_right") and lane < LANES - 1:
+		start_move(1)
+		return
 
-	move_started.emit(lane, new_target, "hop")
-	if tween:
-		tween.kill()
-	moving = false
-	target_lane = new_target
-	position = target_pos(new_target)
-	set_lane(new_target, "hop")
+	noel.speed_scale = 1.0
+	noel.play("idle")

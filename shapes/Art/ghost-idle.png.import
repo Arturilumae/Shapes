@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dl2lf6fw83u1"
-path="res://.godot/imported/noel.png-83409c77a73d6c7989627bb2eef3a1af.ctex"
+uid="uid://bppuq2ogwhtw6"
+path="res://.godot/imported/ghost-idle.png-a93ed962cd5234c3c6a29d05286ae2be.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Art/noel.png"
-dest_files=["res://.godot/imported/noel.png-83409c77a73d6c7989627bb2eef3a1af.ctex"]
+source_file="res://Art/ghost-idle.png"
+dest_files=["res://.godot/imported/ghost-idle.png-a93ed962cd5234c3c6a29d05286ae2be.ctex"]
 
 [params]
 

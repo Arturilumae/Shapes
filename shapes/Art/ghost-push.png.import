@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bl0ql6xf785yi"
-path="res://.godot/imported/ghos-push.png-fdfa9d7423c275fc4b975b3d9f1e0870.ctex"
+uid="uid://bmg61ntaktv07"
+path="res://.godot/imported/ghost-push.png-6ed13c48b1fd3af0de9fc8d3b8dc8cbf.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Art/ghos-push.png"
-dest_files=["res://.godot/imported/ghos-push.png-fdfa9d7423c275fc4b975b3d9f1e0870.ctex"]
+source_file="res://Art/ghost-push.png"
+dest_files=["res://.godot/imported/ghost-push.png-6ed13c48b1fd3af0de9fc8d3b8dc8cbf.ctex"]
 
 [params]
 
