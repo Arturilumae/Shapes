@@ -10,6 +10,18 @@ func _ready():
 func _draw():
 	draw_circle(Vector2.ZERO, 30, Color.WHITE)
 
+
+func _process(delta):
+	if cd:
+		return
+		
+	# Check if keys are held down continuously
+	if Input.is_action_pressed("ui_left") and lane > 0:
+		update_position(-1,"tween")
+	elif Input.is_action_pressed("ui_right") and lane < LANES - 1:
+		update_position(1,"tween")
+
+
 func _unhandled_input(event):
 	if cd == true:
 		return
