@@ -1,9 +1,9 @@
-[gd_scene format=3 uid="uid://36wf5vamjqsw"]
+[gd_scene format=3 uid="uid://de1ykmexkfmvw"]
 
-[ext_resource type="Script" uid="uid://mw2gavgs31jk" path="res://Scripts/line.gd" id="1_syjhi"]
+[sub_resource type="GDScript" id="GDScript_kltre"]
 
 [node name="Line" type="Node2D" unique_id=1634272210]
-script = ExtResource("1_syjhi")
+script = SubResource("GDScript_kltre")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1832826413]
 offset_left = -5.0

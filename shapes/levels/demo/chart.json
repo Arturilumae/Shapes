@@ -1,0 +1,27 @@
+{
+  "title": "Demo",
+  "audio": "song.ogg",
+  "bpm": 120,
+  "offset": 0.0,
+  "notes": [
+	{ "beat": 4.0,  "lane": 0 , "length": 2},
+	{ "beat": 6.0,  "lane": 1 },
+	{ "beat": 7.0,  "lane": 3 },
+	{ "beat": 8.0,  "lane": 2 },
+	{ "beat": 9.0,  "lane": 1 },
+	{ "beat": 10.0,  "lane": 2 },
+	{ "beat": 11.0,  "lane": 3 },
+	{ "beat": 12.0, "lane": 1 },
+	{ "beat": 13.0, "lane": 2 },
+	{ "beat": 14.0, "lane": 1 },
+	{ "beat": 15.0, "lane": 2 },
+	{ "beat": 16.0, "lane": 0 },
+	{ "beat": 17.0, "lane": 1 },
+	{ "beat": 18.0, "lane": 2 },
+	{ "beat": 19.0, "lane": 3 },
+	{ "beat": 19.5, "lane": 1 },
+	{ "beat": 20.0, "lane": 2 },
+	{ "beat": 20.5, "lane": 1 },
+	{ "beat": 21.0, "lane": 3 }
+  ]
+}

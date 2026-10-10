@@ -1,17 +1,17 @@
 [gd_scene format=3 uid="uid://byl4173f3s6os"]
 
-[ext_resource type="Script" uid="uid://blv28japon8x" path="res://Scripts/main.gd" id="1_jjgbg"]
-[ext_resource type="PackedScene" uid="uid://36wf5vamjqsw" path="res://Scenes/line.tscn" id="2_bo1nx"]
+[ext_resource type="Script" uid="uid://cslxwqchcb20o" path="res://Scripts/game.gd" id="1_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://dbkwdxovtqdhw" path="res://Scenes/player.tscn" id="3_8gbba"]
 
 [node name="Main" type="Node2D" unique_id=356827938]
-script = ExtResource("1_jjgbg")
-line_scene = ExtResource("2_bo1nx")
-
-[node name="Timer" type="Timer" parent="." unique_id=1638242881]
-wait_time = 0.8
-autostart = true
+script = ExtResource("1_bo1nx")
 
 [node name="Player" parent="." unique_id=2088542105 instance=ExtResource("3_8gbba")]
 
-[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[node name="Track" type="Node2D" parent="." unique_id=66785672]
+
+[node name="Music" type="AudioStreamPlayer2D" parent="." unique_id=707187183]
+
+[node name="JudgeLabel" type="Label" parent="." unique_id=1924271726]
+offset_right = 40.0
+offset_bottom = 23.0
