@@ -9,7 +9,7 @@ const LINE_COLOR := Color("5dc8ff")
 const LINE_HIT_COLOR := Color("7dff8a")
 const LINE_HIT_miss := Color("84001dff")
 
-@export var level_dir := "res://levels/demo"  # või nt "user://levels/minu_lugu"
+@export var level_dir := "res://levels/demo/"  # või nt "user://levels/minu_lugu"
 @export var scroll_speed := 300.0             # pikslit sekundis
 @export var audio_offset := 0.0               # mängija kalibreering sekundites
 
