@@ -9,6 +9,10 @@ script = ExtResource("1_b88mk")
 song_path = "res://levels/demo/tuljak1.ogg"
 bpm = 95.65
 offset = 0.604
+snap = null
+start_beat = null
+reaction = null
+output_path = null
 
 [node name="Music" type="AudioStreamPlayer" parent="." unique_id=1212440370]
 stream = ExtResource("2_hyly4")

@@ -70,8 +70,6 @@ func save_chart() -> void:
 		return
 	recording = false
 
-	# Raja vahetused -> lõigud. Ajad ümardatakse lähima snap-sammuni,
-	# see parandab sinu vajutuste väikese ebatäpsuse.
 	var notes: Array = []
 	for i in changes.size():
 		var b0 := maxf(snappedf(changes[i]["beat"], snap), start_beat)
@@ -81,7 +79,7 @@ func save_chart() -> void:
 		else:
 			b1 = snappedf(current_beat, snap)
 		if b1 - b0 <= 0.0:
-			continue  # liiga lühike (nt rajast ainult läbi sõitmine)
+			continue
 		var lane: int = changes[i]["lane"]
 		if not notes.is_empty():
 			var prev: Dictionary = notes[-1]
@@ -90,7 +88,6 @@ func save_chart() -> void:
 				continue
 		notes.append({"beat": b0, "lane": lane, "length": b1 - b0})
 
-	# Kirjutame JSON-i, üks lõik rea kohta, et oleks lihtne käsitsi muuta
 	var lines := PackedStringArray()
 	for n in notes:
 		lines.append('    { "beat": %s, "lane": %d, "length": %s }' % [n["beat"], n["lane"], n["length"]])
@@ -101,11 +98,17 @@ func save_chart() -> void:
 		+ '  "offset": %s,\n' % offset \
 		+ '  "notes": [\n' + ",\n".join(lines) + "\n  ]\n}\n"
 
-	var file := FileAccess.open(output_path, FileAccess.WRITE)
+	# Loome unikaalse failinime ajatempli järgi (nt chart_recorded_20261010_160512.json)
+	var dt := Time.get_datetime_dict_from_system()
+	var timestamp := "%04d%02d%02d_%02d%02d%02d" % [dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second]
+	var dynamic_path = output_path.get_basename() + "_" + timestamp + "." + output_path.get_extension()
+
+	var file := FileAccess.open(dynamic_path, FileAccess.WRITE)
 	if file == null:
-		label.text = "Salvestamine ebaõnnestus: " + output_path
+		label.text = "Salvestamine ebaõnnestus: " + dynamic_path
 		return
 	file.store_string(text)
 	file.close()
-	label.text = "Salvestatud %d lõiku:\n%s\nTühik = salvesta uuesti" % [notes.size(), output_path]
-	print("Salvestatud: ", ProjectSettings.globalize_path(output_path))
+	
+	label.text = "Salvestatud %d lõiku:\n%s" % [notes.size(), dynamic_path.get_file()]
+	print("Salvestatud: ", ProjectSettings.globalize_path(dynamic_path))
