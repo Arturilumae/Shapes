@@ -1,15 +1,14 @@
 [gd_scene format=3 uid="uid://bypfrfyb4ckmk"]
 
 [ext_resource type="Script" uid="uid://b6rqvexov8sml" path="res://Scripts/recorder.gd" id="1_b88mk"]
-[ext_resource type="AudioStream" uid="uid://b8f4fsja3qxp2" path="res://levels/demo/tuljak1.ogg" id="2_hyly4"]
+[ext_resource type="AudioStream" uid="uid://dnmmd3xq4f5ya" path="res://levels/demo/kaunimadlaulud.ogg" id="2_b88mk"]
 [ext_resource type="PackedScene" uid="uid://dbkwdxovtqdhw" path="res://Scenes/player.tscn" id="3_hucmr"]
 
 [node name="recorder" type="Node2D" unique_id=1197249021]
 script = ExtResource("1_b88mk")
-song_path = "res://levels/demo/tuljak1.ogg"
 
 [node name="Music" type="AudioStreamPlayer" parent="." unique_id=1212440370]
-stream = ExtResource("2_hyly4")
+stream = ExtResource("2_b88mk")
 
 [node name="Player" parent="." unique_id=2088542105 instance=ExtResource("3_hucmr")]
 
