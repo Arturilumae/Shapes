@@ -46,7 +46,7 @@ const DIAG_EARLY_WINDOW := 0.3    # kui mitu sekundit varem tehtud liigutust vee
 @export var play_width := 209                  # mänguala laius (paremal on score ja elud)
 @export var lane_x0 := 26                      # esimese raja keskjoone x
 @export var lane_spacing := 52                 # kahe raja keskjoonte vahe = diagonaali samm
-@export var hit_line_y := 120                  # löögijoone (ja mängija) y
+@export var hit_line_y := 104                  # löögijoone (ja mängija) y
 @export var min_straight := 10                 # vähim sirge joon kahe ülemineku vahel
 
 @export_group("Joone spritid")
