@@ -15,9 +15,8 @@ extends Node2D
 #region Konstandid
 
 const LANES := 4
-const LINE_COLOR := Color("5dc8ff")
-const LINE_HIT_COLOR := Color("7dff8a")
-const LINE_MISS_COLOR := Color("84001dff")
+const LINE_HIT_COLOR := Color("7f95b1")
+const LINE_MISS_COLOR := Color("492045")
 
 const FRAME := 1.0 / 60.0         # üks mängukaader (60 FPS)
 # Ülemineku täpsus vastavalt sellele, mitu kaadrit mööda:
@@ -70,6 +69,7 @@ const DIAG_EARLY_WINDOW := 0.3    # kui mitu sekundit varem tehtud liigutust vee
 @onready var judge_label: Label = get_node_or_null("JudgeLabel")
 @onready var health_bar: Range = get_node_or_null("%HealthBar")
 @onready var score_label: Label = get_node_or_null("%ScoreLabel")
+@onready var accuracy_label: Label = get_node_or_null("%AccuracyLabel")
 
 #endregion
 
@@ -155,12 +155,7 @@ func _process(delta: float) -> void:
 
 
 ## Rajajooned ja löögijoon (abijooned).
-func _draw() -> void:
-	var h := get_viewport_rect().size.y
-	for lane in LANES:
-		var x := lane_x(lane) + 0.5
-		draw_line(Vector2(x, 0), Vector2(x, h), Color(1, 1, 1, 0.15), 1.0)
-	draw_line(Vector2(0, hit_line_y + 0.5), Vector2(play_width, hit_line_y + 0.5), Color(1, 1, 1, 0.4), 1.0)
+
 
 #endregion
 
@@ -396,7 +391,6 @@ func _spawn_transition_pieces(links: Array) -> void:
 			hop.tex = line_left if hop.to_left else line_right
 			hop.jumped = jumped
 			hop.step = lane_spacing
-			hop.color = LINE_COLOR
 			# Nullpunkt on vasakpoolsema raja keskjoon, raja vahetuse kõrgusel
 			hop.position = Vector2(mini(xa, xb), mid)
 			hop.z_index = 1   # sirgete joonte peale, et ääred jääksid õigeks
@@ -409,7 +403,6 @@ func _spawn_transition_pieces(links: Array) -> void:
 			diag.tex = line_diag_right if diag.down_right else line_diag_left
 			diag.jumped = jumped
 			diag.step = lane_spacing
-			diag.color = LINE_COLOR
 			# Nullpunkt on ülemine ots (hilisema raja keskjoon)
 			diag.position = Vector2(xb, mid - half)
 			track.add_child(diag)
@@ -435,7 +428,6 @@ func _spawn_straight_pieces(links: Array) -> int:
 
 		var piece := StraightPiece.new()
 		piece.tex = line_straight
-		piece.color = LINE_COLOR
 		piece.height = maxi(0, bottom - top)
 		piece.position = Vector2(x, top)
 		track.add_child(piece)
@@ -640,6 +632,10 @@ func _update_hud() -> void:
 		health_bar.value = current_health
 	if score_label:
 		score_label.text = "%06d" % int(score)
+	if accuracy_label:
+		# Enne esimest hinnatud joont näita 100%
+		var acc := accuracy_percent() if acc_count > 0 else 100.0
+		accuracy_label.text = "%d%%" % int(acc)
 
 
 func _update_judge_label() -> void:

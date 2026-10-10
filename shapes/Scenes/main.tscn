@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://bsoddqumej7wl" path="res://Art/ghost-pull.png" id="4_344ge"]
 [ext_resource type="Texture2D" uid="uid://bppuq2ogwhtw6" path="res://Art/ghost-idle.png" id="4_hptm8"]
 [ext_resource type="Texture2D" uid="uid://dp5cqhws2qbt3" path="res://Art/taust.png" id="5_kry3j"]
-[ext_resource type="Texture2D" uid="uid://n0wtv43umk1e" path="res://Art/elud.png" id="6_21xkr"]
+[ext_resource type="Texture2D" uid="uid://81d17xi7k6kw" path="res://Art/elud.png" id="6_21xkr"]
 [ext_resource type="Texture2D" uid="uid://bmg61ntaktv07" path="res://Art/ghost-push.png" id="6_d1ilt"]
 [ext_resource type="FontFile" uid="uid://oxkynrojvw1d" path="res://Art/aseprite.otf" id="8_ynf5e"]
 
@@ -219,15 +219,19 @@ animations = [{
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_uud5k"]
 atlas = ExtResource("6_21xkr")
-region = Rect2(207, 61, 13, 55)
+region = Rect2(214, 63, 37, 75)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_c2wqx"]
 atlas = ExtResource("6_21xkr")
-region = Rect2(225, 61, 13, 55)
+region = Rect2(168, 64, 37, 75)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7wphs"]
 atlas = ExtResource("6_21xkr")
 region = Rect2(214, 6, 27, 6)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k2e45"]
+atlas = ExtResource("6_21xkr")
+region = Rect2(207, 20, 40, 7)
 
 [node name="Main" type="Node2D" unique_id=356827938]
 script = ExtResource("1_bo1nx")
@@ -264,10 +268,10 @@ texture = ExtResource("5_kry3j")
 
 [node name="HealthBar" type="TextureProgressBar" parent="UI" unique_id=1184322789]
 unique_name_in_owner = true
-offset_left = 226.0
-offset_top = 67.0
-offset_right = 239.0
-offset_bottom = 122.0
+offset_left = 214.0
+offset_top = 63.0
+offset_right = 251.0
+offset_bottom = 138.0
 value = 50.0
 fill_mode = 3
 texture_over = SubResource("AtlasTexture_uud5k")
@@ -295,4 +299,30 @@ offset_right = 13.5
 offset_bottom = 11.501999
 theme_override_fonts/font = ExtResource("8_ynf5e")
 theme_override_font_sizes/font_size = 7
+text = "1"
+horizontal_alignment = 1
+
+[node name="Accrucy" type="TextureRect" parent="UI" unique_id=379596229]
+offset_left = 213.0
+offset_top = 23.0
+offset_right = 253.0
+offset_bottom = 30.0
+texture = SubResource("AtlasTexture_k2e45")
+stretch_mode = 4
+
+[node name="AccuracyLabel" type="Label" parent="UI/Accrucy" unique_id=824150968]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 3.0830002
+anchor_right = 0.5
+anchor_bottom = 3.0830002
+offset_left = -15.0
+offset_top = -14.581001
+offset_right = 12.0
+offset_bottom = 8.418999
+theme_override_fonts/font = ExtResource("8_ynf5e")
+theme_override_font_sizes/font_size = 7
+text = "1"
 horizontal_alignment = 1
