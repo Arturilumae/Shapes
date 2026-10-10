@@ -26,6 +26,7 @@ const LINE_HIT_miss := Color("84001dff")
 @export var lane_x0 := 26                      # esimese raja keskjoone x
 @export var lane_spacing := 52                 # kahe raja keskjoonte vahe = diagonaali samm
 @export var hit_line_y := 120                  # löögijoone (ja mängija) y
+@export var min_straight := 10                 # vähim sirge joon kahe diagonaali vahel
 
 @export_group("Joone spritid")
 @export var line_straight: Texture2D           # sirge tükk, nt 3 px lai
@@ -115,6 +116,16 @@ func dist_at(t: float) -> float:
 			break
 		p = q
 	return p["dist"] + (t - p["t"]) * p["speed"]
+
+
+## Vastupidine: mis ajal on rada liikunud d pikslit.
+func time_at_dist(d: float) -> float:
+	var p: Dictionary = speed_points[0]
+	for q in speed_points:
+		if q["dist"] > d:
+			break
+		p = q
+	return p["t"] + (d - p["dist"]) / p["speed"]
 
 
 # ---------- Leveli laadimine ----------
