@@ -83,6 +83,7 @@ func _ready() -> void:
 	# Laul on valikuline: kui seda pole, töötab level sisemise kella järgi
 	var audio_name: String = chart.get("audio", "")
 	var stream: AudioStream = null
+	music.stream = null
 	if audio_name != "":
 		stream = load_audio(level_dir.path_join(audio_name))
 	if stream != null:
