@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://j0kn2hwgodik"]
+
+[node name="LevelSelect" type="Control" unique_id=2113504259]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1225694905]
+layout_mode = 0
+offset_right = 259.0
+offset_bottom = 149.0
+color = Color(0.47847533, 0.75564003, 0.82841986, 1)
+
+[node name="ColorRect2" type="ColorRect" parent="ColorRect" unique_id=311094563]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 0
+offset_left = 14.0
+offset_top = 11.0
+offset_right = 242.0
+offset_bottom = 136.0
+color = Color(0.40392157, 0.22745098, 1, 1)
+
+[node name="GridContainer" type="GridContainer" parent="ColorRect" unique_id=1769550902]
+layout_mode = 0
+offset_left = 39.0
+offset_top = 25.0
+offset_right = 221.0
+offset_bottom = 125.0
+theme_override_constants/h_separation = 16
+columns = 3
+
+[node name="Button" type="Button" parent="ColorRect/GridContainer" unique_id=2043202988]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "1"
+
+[node name="Button2" type="Button" parent="ColorRect/GridContainer" unique_id=2000046109]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "2"
+
+[node name="Button3" type="Button" parent="ColorRect/GridContainer" unique_id=1396545066]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "3"
