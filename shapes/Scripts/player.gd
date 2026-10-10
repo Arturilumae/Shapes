@@ -41,8 +41,6 @@ func _process(_delta):
 
 
 func _unhandled_input(event):
-	if moving == true:
-		return
 	# Iga vajutus loetakse eraldi sündmusena, nii et ka kaks vajutust
 	# samas kaadris lähevad kirja. Uus vajutus kirjutab käimasoleva liikumise üle.
 	if event.is_action_pressed("ui_left"):
@@ -104,6 +102,8 @@ func _on_move_done():
 
 
 func hop(dir: int):
+	if moving == true:
+		return
 	var new_target: int
 	if moving:
 		# Hüpe käimasoleva liikumise ajal ei lisa vahemaad juurde:
