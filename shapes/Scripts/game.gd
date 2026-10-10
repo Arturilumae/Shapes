@@ -6,6 +6,13 @@ extends Node2D
 ## Pikslikunsti jaoks: kõik asukohad on täisarvud, diagonaalid on 45° ja
 ## pannakse kokku korduvatest tükkidest (mitte ei venitata).
 
+#debug
+@export_group("Debug")
+@export var debug_view := false      # näita, mida mäng hindab
+@export_range(0.1, 1.0) var debug_speed := 1.0   # 0.25 = neli korda aeglasemalt
+
+
+
 const LANES := 4
 const LINE_COLOR := Color("5dc8ff")
 const LINE_HIT_COLOR := Color("7dff8a")
@@ -80,6 +87,8 @@ func _ready() -> void:
 	build_track(chart)
 	queue_redraw()
 	playing = true
+	Engine.time_scale = debug_speed
+	music.pitch_scale = debug_speed
 	if use_music:
 		music.play()
 
@@ -329,6 +338,8 @@ func _process(delta: float) -> void:
 		# Joon muutub punasest roheliseks vastavalt sellele, kui suure osa ajast olid joonel
 		var ratio := on_current_line / total_current_line
 		seg["rect"].modulate = LINE_HIT_miss.lerp(LINE_HIT_COLOR, ratio)
+		if debug_view:
+			queue_redraw()
 
 
 func show_status(text: String) -> void:
@@ -359,7 +370,15 @@ func _draw() -> void:
 		var x := lane_x(lane) + 0.5
 		draw_line(Vector2(x, 0), Vector2(x, h), Color(1, 1, 1, 0.15), 1.0)
 	draw_line(Vector2(0, hit_line_y + 0.5), Vector2(play_width, hit_line_y + 0.5), Color(1, 1, 1, 0.4), 1.0)
-
+	
+	if not debug_view or not playing:
+		return
+	# Roheline kast = rada, mida mäng hetkel õigeks loeb
+	if current < segments.size() and segments[current]["start"] <= song_time:
+		var x := lane_x(segments[current]["lane"])
+		draw_rect(Rect2(x - 4, hit_line_y - 4, 9, 9), Color.GREEN, false, 1.0)
+	# Kollane täpp = mängija rada hindamise jaoks
+	draw_rect(Rect2(lane_x(player.lane) - 1, hit_line_y + 7, 3, 3), Color.YELLOW)
 
 # ---------- Joone tükid ----------
 

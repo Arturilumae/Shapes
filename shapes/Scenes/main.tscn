@@ -20,6 +20,7 @@ region = Rect2(128, 9, 55, 53)
 
 [node name="Main" type="Node2D" unique_id=356827938]
 script = ExtResource("1_bo1nx")
+debug_view = true
 line_straight = SubResource("AtlasTexture_jjvhh")
 line_diag_right = SubResource("AtlasTexture_kry3j")
 line_diag_left = SubResource("AtlasTexture_21xkr")
