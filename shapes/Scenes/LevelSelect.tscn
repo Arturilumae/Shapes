@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://j0kn2hwgodik"]
 
+[ext_resource type="Script" uid="uid://dufa46lmvrw0h" path="res://Scripts/buttons.gd" id="1_chbko"]
+
 [node name="LevelSelect" type="Control" unique_id=2113504259]
 layout_mode = 3
 anchors_preset = 15
@@ -25,27 +27,32 @@ color = Color(0.40392157, 0.22745098, 1, 1)
 
 [node name="GridContainer" type="GridContainer" parent="ColorRect" unique_id=1769550902]
 layout_mode = 0
-offset_left = 39.0
-offset_top = 25.0
-offset_right = 221.0
-offset_bottom = 125.0
+offset_left = 27.0
+offset_top = 32.0
+offset_right = 255.0
+offset_bottom = 132.0
 theme_override_constants/h_separation = 16
-columns = 3
+columns = 4
+script = ExtResource("1_chbko")
+
+[node name="Button0" type="Button" parent="ColorRect/GridContainer" unique_id=1622224163]
+layout_mode = 2
+theme_override_font_sizes/font_size = 52
+text = "0"
 
 [node name="Button" type="Button" parent="ColorRect/GridContainer" unique_id=2043202988]
-custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 64
+theme_override_font_sizes/font_size = 52
 text = "1"
 
 [node name="Button2" type="Button" parent="ColorRect/GridContainer" unique_id=2000046109]
-custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 64
+theme_override_font_sizes/font_size = 52
 text = "2"
 
 [node name="Button3" type="Button" parent="ColorRect/GridContainer" unique_id=1396545066]
-custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 64
+theme_override_font_sizes/font_size = 52
 text = "3"
+
+[connection signal="pressed" from="ColorRect/GridContainer/Button" to="ColorRect/GridContainer/Button" method="_on_pressed"]

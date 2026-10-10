@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cslxwqchcb20o" path="res://Scripts/game.gd" id="1_jtv8s"]
 [ext_resource type="Texture2D" uid="uid://b7cj6hdqv2fv5" path="res://Art/jooned.png" id="2_c81s1"]
-[ext_resource type="Texture2D" uid="uid://cfyvhb8cv4ird" path="res://Art/joonedvol2t.png" id="3_n4vm5"]
+[ext_resource type="Texture2D" uid="uid://df4u2gxo8mem5" path="res://Art/joonedvol2t.png" id="3_n4vm5"]
 [ext_resource type="PackedScene" uid="uid://dbkwdxovtqdhw" path="res://Scenes/player.tscn" id="4_fxnjf"]
 [ext_resource type="Texture2D" uid="uid://bppuq2ogwhtw6" path="res://Art/ghost-idle.png" id="5_xjeco"]
 [ext_resource type="Texture2D" uid="uid://bmg61ntaktv07" path="res://Art/ghost-push.png" id="6_j77fg"]
@@ -236,6 +236,7 @@ region = Rect2(207, 20, 40, 7)
 
 [node name="level_3" type="Node2D" unique_id=356827938]
 script = ExtResource("1_jtv8s")
+level_dir = "res://levels/demo/kunglarahvas_chart.json"
 hitbox_radius = 5.0
 line_straight = SubResource("AtlasTexture_ynf5e")
 line_diag_right = SubResource("AtlasTexture_hptm8")

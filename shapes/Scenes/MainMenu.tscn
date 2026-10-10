@@ -4,7 +4,6 @@
 [ext_resource type="Texture2D" uid="uid://vgxqbl6fwk23" path="res://Art/buttons.png" id="2_8um5k"]
 [ext_resource type="Script" uid="uid://cdskmsw07xeq5" path="res://Scripts/playButton.gd" id="3_xim88"]
 [ext_resource type="Texture2D" uid="uid://cdb0ly7lqkwbx" path="res://Art/text.png" id="4_koqhg"]
-[ext_resource type="FontFile" uid="uid://oxkynrojvw1d" path="res://Art/aseprite.otf" id="5_cmrfp"]
 [ext_resource type="AudioStream" uid="uid://q8o0f0jw3qck" path="res://maintheme.ogg" id="6_8um5k"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nvly8"]
@@ -64,19 +63,6 @@ texture_normal = SubResource("AtlasTexture_nvly8")
 texture_pressed = SubResource("AtlasTexture_0msvk")
 texture_hover = SubResource("AtlasTexture_nyimn")
 
-[node name="Label" type="Label" parent="Camera2D/Sprite2D2/Button2" unique_id=1146127398]
-visible = false
-texture_filter = 1
-layout_mode = 0
-offset_right = 62.0
-offset_bottom = 20.0
-theme_override_colors/font_color = Color(0.1955451, 0.1955451, 0.19554508, 1)
-theme_override_fonts/font = ExtResource("5_cmrfp")
-theme_override_font_sizes/font_size = 8
-text = "Settings"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="Sprite2D" type="Sprite2D" parent="Camera2D/Sprite2D2/Button2" unique_id=748432323]
 position = Vector2(30, 9)
 texture = SubResource("AtlasTexture_57qmd")
@@ -90,19 +76,6 @@ offset_bottom = 61.0
 texture_normal = SubResource("AtlasTexture_nvly8")
 texture_pressed = SubResource("AtlasTexture_0msvk")
 texture_hover = SubResource("AtlasTexture_nyimn")
-
-[node name="Label" type="Label" parent="Camera2D/Sprite2D2/Button3" unique_id=1024813399]
-visible = false
-texture_filter = 1
-layout_mode = 0
-offset_right = 62.0
-offset_bottom = 20.0
-theme_override_colors/font_color = Color(0.1955451, 0.1955451, 0.19554508, 1)
-theme_override_fonts/font = ExtResource("5_cmrfp")
-theme_override_font_sizes/font_size = 8
-text = "Credits"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="Sprite2D" type="Sprite2D" parent="Camera2D/Sprite2D2/Button3" unique_id=1432526040]
 position = Vector2(32, 8)
