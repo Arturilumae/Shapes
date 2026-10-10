@@ -6,7 +6,7 @@
 [ext_resource type="AudioStream" uid="uid://payvlo0xhfo7" path="res://levels/demo/tuljak1.ogg" id="3_jjvhh"]
 [ext_resource type="Texture2D" uid="uid://bsoddqumej7wl" path="res://Art/ghost-pull.png" id="4_344ge"]
 [ext_resource type="Texture2D" uid="uid://bppuq2ogwhtw6" path="res://Art/ghost-idle.png" id="4_hptm8"]
-[ext_resource type="Texture2D" uid="uid://cxigmjqkalc5l" path="res://Art/manguTaust.png" id="5_kry3j"]
+[ext_resource type="Texture2D" uid="uid://dp5cqhws2qbt3" path="res://Art/taust.png" id="5_kry3j"]
 [ext_resource type="Texture2D" uid="uid://n0wtv43umk1e" path="res://Art/elud.png" id="6_21xkr"]
 [ext_resource type="Texture2D" uid="uid://bmg61ntaktv07" path="res://Art/ghost-push.png" id="6_d1ilt"]
 [ext_resource type="FontFile" uid="uid://oxkynrojvw1d" path="res://Art/aseprite.otf" id="8_ynf5e"]
@@ -237,7 +237,6 @@ line_diag_right = SubResource("AtlasTexture_hptm8")
 line_diag_left = SubResource("AtlasTexture_d1ilt")
 line_left = SubResource("AtlasTexture_6iyac")
 line_right = SubResource("AtlasTexture_fdnlq")
-debug_hitbox = true
 
 [node name="Track" type="Node2D" parent="." unique_id=66785672]
 
@@ -253,10 +252,6 @@ centered = false
 
 [node name="Music" type="AudioStreamPlayer2D" parent="." unique_id=707187183]
 stream = ExtResource("3_jjvhh")
-
-[node name="JudgeLabel" type="Label" parent="." unique_id=1924271726]
-offset_right = 40.0
-offset_bottom = 23.0
 
 [node name="BackGround" type="CanvasLayer" parent="." unique_id=1581122580]
 layer = -1
