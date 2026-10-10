@@ -15,7 +15,7 @@ extends Node2D
 #region Konstandid
 
 const LANES := 4
-const LINE_HIT_COLOR := Color("7f95b1")
+const LINE_HIT_COLOR := Color("528a32ff")
 const LINE_MISS_COLOR := Color("492045")
 
 const FRAME := 1.0 / 60.0         # üks mängukaader (60 FPS)
@@ -23,6 +23,46 @@ const FRAME := 1.0 / 60.0         # üks mängukaader (60 FPS)
 # 0–2 kaadrit -> 100%, 3 -> 80%, 4 -> 60%, 5 -> 40%, 6 -> 20%, edasi 0%
 const DIAG_GRADES := [1.0, 1.0, 1.0, 0.8, 0.6, 0.4, 0.2]
 const DIAG_EARLY_WINDOW := 0.3    # kui mitu sekundit varem tehtud liigutust veel üleminekuga seotakse
+
+const HISTORY := 256   # mitu viimast joonerida värvi mäletab (peab klappima shaderiga)
+
+## Värvib joone pikslirea kaupa: löögijoonest allpool olevad read saavad värvi
+## selle järgi, kui hästi nõel joonel oli, kui see rida löögijoonest möödus.
+const LINE_SHADER := """
+shader_type canvas_item;
+
+uniform sampler2D history : filter_nearest;
+uniform float hit_y;
+uniform float track_y;
+uniform vec4 hit_color : source_color;
+uniform vec4 miss_color : source_color;
+uniform float strength = 1.0;
+uniform float fade_px = 7.0;   // mitme px peal värv ülemises servas sujuvalt tekib
+
+varying float screen_y;
+
+void vertex() {
+	screen_y = (MODEL_MATRIX * vec4(VERTEX, 0.0, 1.0)).y;
+}
+
+void fragment() {
+	float y = floor(screen_y);
+	// Ülemine serv: fade_px rea jooksul kasvab värv 0 -> täis.
+	// Nendes ridades kasutatakse kõige uuemat hinnet (värvimise alguse rida).
+	float fade = 1.0;
+	if (y < hit_y) {
+		fade = clamp((y - (hit_y - fade_px - 1.0)) / (fade_px + 1.0), 0.0, 1.0);
+	}
+	if (fade > 0.0) {
+		float row = max(y, hit_y) - track_y;
+		vec4 h = texture(history, vec2(0.5, (mod(row, 256.0) + 0.5) / 256.0));
+		if (h.a > 0.5) {
+			vec3 tint = mix(miss_color.rgb, hit_color.rgb, h.r);
+			COLOR.rgb *= mix(vec3(1.0), tint, strength * fade);
+		}
+	}
+}
+"""
 
 #endregion
 
@@ -54,6 +94,13 @@ const DIAG_EARLY_WINDOW := 0.3    # kui mitu sekundit varem tehtud liigutust vee
 @export var line_diag_left: Texture2D          # 45° diagonaal alla vasakule ↙ (55×55)
 @export var line_left: Texture2D               # järsk tükk vasakule (53×3)
 @export var line_right: Texture2D              # järsk tükk paremale (53×3)
+
+@export_group("Värvid")
+@export_range(0.0, 1.0) var color_strength := 1.0   # 0 = värv ei muutu, 1 = täielik
+@export var color_smooth := 10.0                     # kui kiiresti värv muutub (suurem = järsem)
+@export var color_falloff_px := 6                    # mitme px kaugusel ringist on joon täiesti "mööda" värvi
+@export var color_offset_px := 8                     # mitu px löögijoonest KÕRGEMAL värvimine algab (suurem = varem)
+@export var color_fade_px := 7                       # mitme px peal ülemine serv sujuvalt värviliseks läheb (0 = järsk)
 
 @export_group("Debug")
 @export var debug_hitbox := false              # näita nõela hitbox-ringi
@@ -105,6 +152,14 @@ var last_diag := ""           # viimase ülemineku tulemus ekraanil
 var current_health := 0.0
 var last_dist := INF          # viimati mõõdetud kaugus nõelast joone keskjooneni (debug jaoks)
 
+# Joone värv
+var line_material: ShaderMaterial
+var history_img: Image
+var history_tex: ImageTexture
+var last_row := 0
+var row_started := false
+var color_grade := 1.0        # silutud hinne 0..1
+
 #endregion
 
 
@@ -124,6 +179,7 @@ func _ready() -> void:
 
 	_setup_music(chart)
 	build_track(chart)
+	_setup_line_color()
 	player.move_started.connect(_on_player_move_started)
 	queue_redraw()
 
@@ -151,11 +207,8 @@ func _process(delta: float) -> void:
 	_expire_transitions(t)
 	_judge_straight_line(delta, t)
 	update_health(delta, t)
+	update_line_color(delta)
 	_update_hud()
-
-
-## Rajajooned ja löögijoon (abijooned).
-
 
 #endregion
 
@@ -500,10 +553,6 @@ func _judge_straight_line(delta: float, t: float) -> void:
 		score += 100.0 * delta
 	_update_judge_label()
 
-	# Joon muutub punasest roheliseks vastavalt sellele, kui suure osa ajast olid joonel
-	var ratio := on_current_line / total_current_line
-	seg["rect"].modulate = LINE_MISS_COLOR.lerp(LINE_HIT_COLOR, ratio)
-
 
 ## Mängija alustas liikumist teisele rajale (player.gd saadab selle signaali).
 ## Leiame lähima hindamata ülemineku samas suunas ja hindame ajastust kaadrites.
@@ -539,11 +588,10 @@ func _on_player_move_started(from_lane: int, to_lane: int, type: String) -> void
 		return
 
 
-## Üleminek sai hinde (0..1): värvi see hinde järgi.
-func grade_transition(tr: Dictionary, grade: float) -> void:
-	var node: Node2D = tr["node"]
-	if node:
-		node.modulate = LINE_MISS_COLOR.lerp(LINE_HIT_COLOR, grade)
+## Üleminek sai hinde (0..1): värvijälg tõmbub hetkeks selle hinde poole
+## (silumine viib selle sujuvalt tagasi).
+func grade_transition(_tr: Dictionary, grade: float) -> void:
+	color_grade = minf(color_grade, grade)
 
 
 func _transition_label(tr: Dictionary) -> String:
@@ -621,6 +669,60 @@ func update_health(delta: float, t: float) -> void:
 		if current_health <= 0.0:
 			current_health = 0.0
 			game_over()
+
+#endregion
+
+
+#region Joone värv (sujuv värvijälg)
+
+func _setup_line_color() -> void:
+	history_img = Image.create(1, HISTORY, false, Image.FORMAT_RGBA8)
+	history_img.fill(Color(0, 0, 0, 0))   # a = 0: rida pole veel värvitud
+	history_tex = ImageTexture.create_from_image(history_img)
+
+	var shader := Shader.new()
+	shader.code = LINE_SHADER
+	line_material = ShaderMaterial.new()
+	line_material.shader = shader
+	line_material.set_shader_parameter("history", history_tex)
+	line_material.set_shader_parameter("hit_y", float(hit_line_y - color_offset_px))
+	line_material.set_shader_parameter("hit_color", LINE_HIT_COLOR)
+	line_material.set_shader_parameter("miss_color", LINE_MISS_COLOR)
+	line_material.set_shader_parameter("strength", color_strength)
+
+	# Kõik joonetükid kasutavad Tracki materjali
+	track.material = line_material
+	for child in track.get_children():
+		child.use_parent_material = true
+
+
+## Iga kaader: hinne ringi kauguse järgi, silutud, ja kirjutatud nendele
+## joone ridadele, mis just löögijoonest möödusid.
+func update_line_color(delta: float) -> void:
+	if line_material == null:
+		return
+	if last_dist < INF:
+		var target := 1.0 - clampf((last_dist - hitbox_radius) / float(color_falloff_px), 0.0, 1.0)
+		color_grade = lerpf(color_grade, target, 1.0 - exp(-color_smooth * delta))
+
+	# Rida, kust värvimine algab (löögijoon miinus nihe), raja koordinaatides
+	var cur_row := hit_line_y - color_offset_px - int(track.position.y)
+	if not row_started:
+		last_row = cur_row + 1
+		row_started = true
+	var col := Color(color_grade, 0.0, 0.0, 1.0)
+	var n := 0
+	while last_row > cur_row and n < HISTORY:
+		last_row -= 1
+		history_img.set_pixel(0, posmod(last_row, HISTORY), col)
+		n += 1
+	last_row = mini(last_row, cur_row)
+
+	history_tex.update(history_img)
+	line_material.set_shader_parameter("track_y", track.position.y)
+	line_material.set_shader_parameter("strength", color_strength)
+	line_material.set_shader_parameter("hit_y", float(hit_line_y - color_offset_px))
+	line_material.set_shader_parameter("fade_px", float(color_fade_px))
 
 #endregion
 
