@@ -24,8 +24,10 @@ const DIAG_EARLY_WINDOW := 0.3    # kui mitu sekundit varem tehtud liigutust vee
 
 @export_group("Elud")
 @export var max_health := 100.0
-@export var health_recover_rate := 15.0        # elu taastub sekundis, kui oled õigel rajal
+@export var health_recover_rate := 5.0        # elu taastub sekundis, kui oled õigel rajal
 @export var health_drain_rate := 50.0          # elu kaob sekundis, kui oled valel rajal
+@export var transition_heal := 5.0            # elu juurde 100% diagonaali/hüppe eest
+@export var transition_damage := 20.0          # elu maha 0% diagonaali/hüppe eest
 
 @export_group("Paigutus (pikslites)")
 @export var play_width := 209                  # mänguala laius (paremal on score ja elud)
@@ -267,6 +269,7 @@ func build_track(chart: Dictionary) -> void:
 			hop.color = LINE_COLOR
 			# Nullpunkt on vasakpoolsema raja keskjoon, raja vahetuse kõrgusel
 			hop.position = Vector2(mini(lane_x(a["lane"]), lane_x(b["lane"])), trans_mid[i])
+			hop.z_index = 1   # joonistatakse sirgete joonte peale, et ääred jääksid õigeks
 			track.add_child(hop)
 			trans_node[i] = hop
 			continue
@@ -369,7 +372,7 @@ func _process(delta: float) -> void:
 		if not tr["done"]:
 			tr["done"] = true
 			acc_count += 1
-			color_transition(tr, 0.0)
+			grade_transition(tr, 0.0)
 			last_diag = "%s: 0%%" % ("Diagonaal" if tr["kind"] == "diag" else "Hüpe")
 		next_trans += 1
 
@@ -405,11 +408,20 @@ func show_status(text: String) -> void:
 	judge_label.text = "%s\nskoor %d   täpsus %d%%\n%s" % [text, int(score), int(accuracy), last_diag]
 
 
-## Värvi diagonaal või järsk tükk hinde järgi: 0 = punane, 1 = roheline.
-func color_transition(tr: Dictionary, grade: float) -> void:
+## Diagonaal või järsk tükk sai hinde (0..1): värvi see ja muuda elusid.
+##   100% -> +transition_heal, 0% -> -transition_damage, vahepeal sujuvalt
+##   (vaikeseadetega 80% -> +4, 60% -> -2, 40% -> -8, 20% -> -14)
+func grade_transition(tr: Dictionary, grade: float) -> void:
 	var node: Node2D = tr["node"]
 	if node:
 		node.modulate = LINE_HIT_miss.lerp(LINE_HIT_COLOR, grade)
+
+	var change := grade * transition_heal - (1.0 - grade) * transition_damage
+	current_health = clampf(current_health + change, 0.0, max_health)
+	if health_bar:
+		health_bar.value = current_health
+	if current_health <= 0.0:
+		game_over()
 
 
 ## Mängija alustas liikumist teisele rajale (player.gd saadab selle signaali).
@@ -434,12 +446,12 @@ func _on_player_move_started(from_lane: int, to_lane: int, type: String) -> void
 		var label := "Diagonaal" if tr["kind"] == "diag" else "Hüpe"
 		var needed := "tween" if tr["kind"] == "diag" else "hop"
 		if type != needed:
-			color_transition(tr, 0.0)
+			grade_transition(tr, 0.0)
 			last_diag = "%s: 0%% (vale liikumine)" % label
 			return
 		var frames := roundi(absf(t - tr["t"]) / FRAME)
 		var grade: float = DIAG_GRADES[frames] if frames < DIAG_GRADES.size() else 0.0
-		color_transition(tr, grade)
+		grade_transition(tr, grade)
 		acc_sum += grade
 		score += 100.0 * grade
 		last_diag = "%s: %d%%" % [label, int(grade * 100)]
