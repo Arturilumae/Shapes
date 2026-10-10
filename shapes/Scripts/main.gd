@@ -1,7 +1,7 @@
 extends Node2D
 
 @export var line_scene: PackedScene
-const LANES = 5
+const LANES = 4
 const MAX_JUMP = 2
 const SPEED_UP = 20.0
 var last_lane = 2

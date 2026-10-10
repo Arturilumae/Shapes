@@ -1,6 +1,6 @@
 extends Node2D
 
-const LANES = 5
+const LANES = 4
 var lane = 2   # alustab keskmisest rajast
 
 func _ready():

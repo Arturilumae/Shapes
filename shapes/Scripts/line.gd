@@ -4,7 +4,7 @@ var speed = 300.0
 var length = 80.0
 
 func _ready():
-	$ColorRect.size.y = length
+	$ColorRect.size.y = randf_range(length/2, length)
 	$ColorRect.position.y = -length
 
 func _process(delta):
