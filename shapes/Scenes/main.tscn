@@ -4,8 +4,10 @@
 [ext_resource type="Texture2D" uid="uid://b7cj6hdqv2fv5" path="res://Art/jooned.png" id="2_jjvhh"]
 [ext_resource type="PackedScene" uid="uid://dbkwdxovtqdhw" path="res://Scenes/player.tscn" id="3_8gbba"]
 [ext_resource type="AudioStream" uid="uid://b8f4fsja3qxp2" path="res://levels/demo/tuljak1.ogg" id="3_jjvhh"]
+[ext_resource type="Texture2D" uid="uid://brc1qfpyp7pss" path="res://Art/ghost-pull.png" id="4_344ge"]
 [ext_resource type="Texture2D" uid="uid://cxigmjqkalc5l" path="res://Art/manguTaust.png" id="5_kry3j"]
 [ext_resource type="Texture2D" uid="uid://n0wtv43umk1e" path="res://Art/elud.png" id="6_21xkr"]
+[ext_resource type="FontFile" uid="uid://oxkynrojvw1d" path="res://Art/aseprite.otf" id="8_ynf5e"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ynf5e"]
 atlas = ExtResource("2_jjvhh")
@@ -27,6 +29,75 @@ region = Rect2(21, 87, 55, 3)
 atlas = ExtResource("2_jjvhh")
 region = Rect2(20, 59, 55, 3)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_jkdf5"]
+atlas = ExtResource("4_344ge")
+region = Rect2(0, 0, 85, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wsu2k"]
+atlas = ExtResource("4_344ge")
+region = Rect2(255, 0, 85, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k12tt"]
+atlas = ExtResource("4_344ge")
+region = Rect2(510, 0, 85, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h1bgf"]
+atlas = ExtResource("4_344ge")
+region = Rect2(765, 0, 85, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b3802"]
+atlas = ExtResource("4_344ge")
+region = Rect2(1020, 0, 85, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fevyy"]
+atlas = ExtResource("4_344ge")
+region = Rect2(1275, 0, 85, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hibaj"]
+atlas = ExtResource("4_344ge")
+region = Rect2(1530, 0, 85, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pdsj5"]
+atlas = ExtResource("4_344ge")
+region = Rect2(1785, 0, 85, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_6bp64"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jkdf5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wsu2k")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k12tt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h1bgf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b3802")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fevyy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hibaj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pdsj5")
+}],
+"loop": 1,
+"name": &"pull",
+"speed": 20.0
+}, {
+"frames": [],
+"loop": 1,
+"name": &"push",
+"speed": 5.0
+}]
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_uud5k"]
 atlas = ExtResource("6_21xkr")
 region = Rect2(207, 61, 13, 55)
@@ -34,6 +105,10 @@ region = Rect2(207, 61, 13, 55)
 [sub_resource type="AtlasTexture" id="AtlasTexture_c2wqx"]
 atlas = ExtResource("6_21xkr")
 region = Rect2(225, 61, 13, 55)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7wphs"]
+atlas = ExtResource("6_21xkr")
+region = Rect2(214, 6, 27, 6)
 
 [node name="Main" type="Node2D" unique_id=356827938]
 script = ExtResource("1_bo1nx")
@@ -44,6 +119,13 @@ line_left = SubResource("AtlasTexture_6iyac")
 line_right = SubResource("AtlasTexture_fdnlq")
 
 [node name="Player" parent="." unique_id=2088542105 instance=ExtResource("3_8gbba")]
+
+[node name="nõel" type="Sprite2D" parent="Player" unique_id=1528853191]
+
+[node name="kalle" type="AnimatedSprite2D" parent="Player" unique_id=48195227]
+position = Vector2(134, 112)
+sprite_frames = SubResource("SpriteFrames_6bp64")
+animation = &"push"
 
 [node name="Track" type="Node2D" parent="." unique_id=66785672]
 
@@ -77,3 +159,27 @@ value = 50.0
 fill_mode = 3
 texture_over = SubResource("AtlasTexture_uud5k")
 texture_progress = SubResource("AtlasTexture_c2wqx")
+
+[node name="Score" type="TextureRect" parent="UI" unique_id=1858549867]
+offset_left = 218.0
+offset_top = 7.0
+offset_right = 245.0
+offset_bottom = 13.0
+texture = SubResource("AtlasTexture_7wphs")
+stretch_mode = 4
+
+[node name="ScoreLabel" type="Label" parent="UI/Score" unique_id=113449571]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 3.0830002
+anchor_right = 0.5
+anchor_bottom = 3.0830002
+offset_left = -13.5
+offset_top = -11.498001
+offset_right = 13.5
+offset_bottom = 11.501999
+theme_override_fonts/font = ExtResource("8_ynf5e")
+theme_override_font_sizes/font_size = 7
+horizontal_alignment = 1
