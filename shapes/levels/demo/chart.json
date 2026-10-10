@@ -5,7 +5,7 @@
   "offset": 0.604,
   "notes": [
   { "beat": 4,  "lane": 1, "length": 2 },
-  { "beat": 6,  "lane": 2, "length": 2 },
+  { "beat": 6,  "lane": 2, "length": 2, "hop": true },
   { "beat": 8,  "lane": 1, "length": 2 },
   { "beat": 10, "lane": 3, "length": 2 },
   { "beat": 12, "lane": 2, "length": 4 }

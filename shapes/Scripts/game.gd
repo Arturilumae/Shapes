@@ -38,6 +38,8 @@ const DIAG_EARLY_WINDOW := 0.3    # kui mitu sekundit varem tehtud liigutust vee
 @export var line_straight: Texture2D           # sirge tükk, nt 3 px lai
 @export var line_diag_right: Texture2D         # 45° diagonaal alla paremale ↘ (55×55)
 @export var line_diag_left: Texture2D          # 45° diagonaal alla vasakule ↙ (55×55)
+@export var line_left: Texture2D               # järsk tükk vasakule (53×3)
+@export var line_right: Texture2D              # järsk tükk paremale (53×3)
 
 @onready var music = $Music          # AudioStreamPlayer või AudioStreamPlayer2D
 @onready var track: Node2D = $Track
@@ -195,7 +197,9 @@ func build_track(chart: Dictionary) -> void:
 	for n in notes:
 		var start := offset + float(n["beat"]) * spb
 		var end := start + float(n.get("length", 1.0)) * spb
-		segments.append({"start": start, "end": end, "lane": int(n["lane"])})
+		# "hop": true tähendab, et sellele lõigule hüpatakse järsu horisontaalse tükiga
+		segments.append({"start": start, "end": end, "lane": int(n["lane"]),
+			"hop": bool(n.get("hop", false))})
 		song_end = maxf(song_end, end)
 
 	# Täida väikesed vahed lõikude vahel, et diagonaalid saaksid tekkida
@@ -206,11 +210,15 @@ func build_track(chart: Dictionary) -> void:
 
 	var count := segments.size()
 
-	# 1) Leia raja vahetused. Diagonaal on 45°: iga raja kohta täpselt
-	#    lane_spacing pikslit alla. Selle keskpunkt on raja vahetuse hetkel.
-	var trans_mid: Array = []    # diagonaali keskpunkti y (täisarv)
-	var trans_half: Array = []   # pool diagonaali kõrgusest (0 = diagonaali pole)
+	# 1) Leia raja vahetused. Kaks liiki:
+	#    "diag" = 45° diagonaal, iga raja kohta täpselt lane_spacing pikslit alla,
+	#             keskpunkt raja vahetuse hetkel
+	#    "hop"  = järsk horisontaalne tükk täpselt raja vahetuse hetkel (kõrgus 0)
+	var trans_kind: Array = []   # "", "diag" või "hop"
+	var trans_mid: Array = []    # ülemineku keskpunkti y (täisarv)
+	var trans_half: Array = []   # pool ülemineku kõrgusest (hop puhul 0)
 	for i in count:
+		trans_kind.append("")
 		trans_mid.append(0)
 		trans_half.append(0)
 		if i + 1 >= count:
@@ -221,14 +229,18 @@ func build_track(chart: Dictionary) -> void:
 			continue
 		var jumped: int = absi(b["lane"] - a["lane"])
 		trans_mid[i] = roundi(-dist_at(a["end"]))
-		trans_half[i] = int(lane_spacing * jumped * 0.5)
+		if b["hop"]:
+			trans_kind[i] = "hop"
+		else:
+			trans_kind[i] = "diag"
+			trans_half[i] = int(lane_spacing * jumped * 0.5)
 
-	# 2) Kahe järjestikuse diagonaali vahele jääb vähemalt min_straight pikslit
-	#    sirget joont. Kui vahetused on liiga lähestikku, lükatakse hilisem edasi
+	# 2) Kahe järjestikuse ülemineku vahele jääb vähemalt min_straight pikslit
+	#    sirget joont. Kui üleminekud on liiga lähestikku, lükatakse hilisem edasi
 	#    ja selle aeg arvutatakse ümber, et hindamine klapiks sellega, mida näed.
 	var shifted := 0
 	for i in range(1, count):
-		if trans_half[i] == 0 or trans_half[i - 1] == 0:
+		if trans_kind[i] == "" or trans_kind[i - 1] == "":
 			continue
 		var limit: int = trans_mid[i - 1] - trans_half[i - 1] - min_straight - trans_half[i]
 		if trans_mid[i] > limit:
@@ -239,12 +251,25 @@ func build_track(chart: Dictionary) -> void:
 			segments[i + 1]["end"] = maxf(segments[i + 1]["end"], new_t)
 			shifted += 1
 
-	# 3) Diagonaalide sõlmed
+	# 3) Üleminekute sõlmed
+	var trans_node := {}   # lõigu indeks -> ülemineku sõlm (värvimiseks pärast hindamist)
 	for i in count:
-		if trans_half[i] == 0:
+		if trans_kind[i] == "":
 			continue
 		var a: Dictionary = segments[i]
 		var b: Dictionary = segments[i + 1]
+		if trans_kind[i] == "hop":
+			var hop := HopPiece.new()
+			hop.to_left = b["lane"] < a["lane"]
+			hop.tex = line_left if hop.to_left else line_right
+			hop.jumped = absi(b["lane"] - a["lane"])
+			hop.step = lane_spacing
+			hop.color = LINE_COLOR
+			# Nullpunkt on vasakpoolsema raja keskjoon, raja vahetuse kõrgusel
+			hop.position = Vector2(mini(lane_x(a["lane"]), lane_x(b["lane"])), trans_mid[i])
+			track.add_child(hop)
+			trans_node[i] = hop
+			continue
 		var piece := DiagPiece.new()
 		piece.down_right = b["lane"] < a["lane"]   # hilisem rada vasakul => alla paremale
 		piece.tex = line_diag_right if piece.down_right else line_diag_left
@@ -254,6 +279,7 @@ func build_track(chart: Dictionary) -> void:
 		# Diagonaali nullpunkt on selle ülemine ots (hilisema raja keskjoon)
 		piece.position = Vector2(lane_x(b["lane"]), trans_mid[i] - trans_half[i])
 		track.add_child(piece)
+		trans_node[i] = piece
 
 	# 4) Sirged tükid diagonaalide vahele
 	var too_short := 0
@@ -261,10 +287,10 @@ func build_track(chart: Dictionary) -> void:
 		var seg: Dictionary = segments[i]
 		var top := roundi(-dist_at(seg["end"]))
 		var bottom := roundi(-dist_at(seg["start"]))
-		if trans_half[i] > 0:
-			top = trans_mid[i] + trans_half[i]           # järgmise diagonaali alumine ots
-		if i > 0 and trans_half[i - 1] > 0:
-			bottom = trans_mid[i - 1] - trans_half[i - 1]  # eelmise diagonaali ülemine ots
+		if trans_kind[i] != "":
+			top = trans_mid[i] + trans_half[i]           # järgmise ülemineku alumine ots
+		if i > 0 and trans_kind[i - 1] != "":
+			bottom = trans_mid[i - 1] - trans_half[i - 1]  # eelmise ülemineku ülemine ots
 		if bottom < top:
 			too_short += 1
 
@@ -280,15 +306,18 @@ func build_track(chart: Dictionary) -> void:
 		seg["hit_start"] = time_at_dist(-bottom)
 		seg["hit_end"] = time_at_dist(-top)
 
-	# 5) Diagonaalide hindamine: ideaalne hetk liikumise alustamiseks on see,
-	#    kui sirge joon löögijoonel lõpeb (diagonaali alumine ots jõuab sinna).
+	# 5) Üleminekute hindamine: ideaalne hetk liikumise alustamiseks on see,
+	#    kui sirge joon löögijoonel lõpeb. Diagonaali peab läbima tweeniga
+	#    (nooled), järsu tüki hüppega (Q/E).
 	for i in count:
-		if trans_half[i] == 0:
+		if trans_kind[i] == "":
 			continue
 		transitions.append({
 			"t": segments[i]["hit_end"],
 			"from": segments[i]["lane"],
 			"to": segments[i + 1]["lane"],
+			"kind": trans_kind[i],
+			"node": trans_node[i],
 			"done": false,
 		})
 
@@ -340,7 +369,8 @@ func _process(delta: float) -> void:
 		if not tr["done"]:
 			tr["done"] = true
 			acc_count += 1
-			last_diag = "Diagonaal: 0%"
+			color_transition(tr, 0.0)
+			last_diag = "%s: 0%%" % ("Diagonaal" if tr["kind"] == "diag" else "Hüpe")
 		next_trans += 1
 
 	# Kas mõni sirge joon on praegu löögijoonel? (diagonaali ajal on vahe, siis ei hinnata)
@@ -375,6 +405,13 @@ func show_status(text: String) -> void:
 	judge_label.text = "%s\nskoor %d   täpsus %d%%\n%s" % [text, int(score), int(accuracy), last_diag]
 
 
+## Värvi diagonaal või järsk tükk hinde järgi: 0 = punane, 1 = roheline.
+func color_transition(tr: Dictionary, grade: float) -> void:
+	var node: Node2D = tr["node"]
+	if node:
+		node.modulate = LINE_HIT_miss.lerp(LINE_HIT_COLOR, grade)
+
+
 ## Mängija alustas liikumist teisele rajale (player.gd saadab selle signaali).
 ## Leiame lähima hindamata diagonaali samas suunas ja hindame ajastust kaadrites.
 func _on_player_move_started(from_lane: int, to_lane: int, type: String) -> void:
@@ -392,15 +429,20 @@ func _on_player_move_started(from_lane: int, to_lane: int, type: String) -> void
 			continue  # vale suund
 		tr["done"] = true
 		acc_count += 1
-		# Hüpe (Q/E) jätab diagonaali vahele: täpsus 0%
-		if type == "hop":
-			last_diag = "Diagonaal: 0% (hüpe)"
+		# Diagonaal tuleb läbida tweeniga (nooled), järsk tükk hüppega (Q/E).
+		# Vale liikumisviis = 0%
+		var label := "Diagonaal" if tr["kind"] == "diag" else "Hüpe"
+		var needed := "tween" if tr["kind"] == "diag" else "hop"
+		if type != needed:
+			color_transition(tr, 0.0)
+			last_diag = "%s: 0%% (vale liikumine)" % label
 			return
 		var frames := roundi(absf(t - tr["t"]) / FRAME)
 		var grade: float = DIAG_GRADES[frames] if frames < DIAG_GRADES.size() else 0.0
+		color_transition(tr, grade)
 		acc_sum += grade
 		score += 100.0 * grade
-		last_diag = "Diagonaal: %d%%" % int(grade * 100)
+		last_diag = "%s: %d%%" % [label, int(grade * 100)]
 		return
 
 
@@ -472,3 +514,23 @@ class DiagPiece extends Node2D:
 		for k in jumped:
 			var x := step * k if down_right else -step * (k + 1)
 			draw_texture(tex, Vector2(x - border, step * k - border))
+
+
+## Järsk horisontaalne tükk raja vahetuse kohal (hüppe jaoks).
+## Nullpunkt on vasakpoolsema raja keskjoon. Iga hüpatud raja kohta üks sprite.
+class HopPiece extends Node2D:
+	var tex: Texture2D
+	var color := Color.WHITE
+	var to_left := false
+	var jumped := 1
+	var step := 52
+
+	func _draw() -> void:
+		if tex == null:
+			draw_rect(Rect2(0, -1, step * jumped + 1, 3), color)
+			return
+		# Raam: sprite 53×3 = 1 px tuum (step + 1 lai) + 1 px üles ja alla
+		var border_x := floori((tex.get_width() - (step + 1)) / 2.0)
+		var border_y := floori((tex.get_height() - 1) / 2.0)
+		for k in jumped:
+			draw_texture(tex, Vector2(step * k - border_x, -border_y))

@@ -1,14 +1,14 @@
 [gd_scene format=3 uid="uid://byl4173f3s6os"]
 
 [ext_resource type="Script" uid="uid://cslxwqchcb20o" path="res://Scripts/game.gd" id="1_bo1nx"]
-[ext_resource type="Texture2D" uid="uid://bw70s16fqan5e" path="res://Art/jooned.png" id="2_jjvhh"]
+[ext_resource type="Texture2D" uid="uid://b7cj6hdqv2fv5" path="res://Art/jooned.png" id="2_jjvhh"]
 [ext_resource type="PackedScene" uid="uid://dbkwdxovtqdhw" path="res://Scenes/player.tscn" id="3_8gbba"]
 [ext_resource type="AudioStream" uid="uid://b8f4fsja3qxp2" path="res://levels/demo/tuljak1.ogg" id="3_jjvhh"]
 [ext_resource type="Texture2D" uid="uid://eanb0g7ken07" path="res://Art/taust.png" id="5_kry3j"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jjvhh"]
 atlas = ExtResource("2_jjvhh")
-region = Rect2(103, 39, 3, 53)
+region = Rect2(103, 40, 3, 51)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_kry3j"]
 atlas = ExtResource("2_jjvhh")
@@ -18,12 +18,21 @@ region = Rect2(175, 79, 55, 53)
 atlas = ExtResource("2_jjvhh")
 region = Rect2(128, 9, 55, 53)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_6bp64"]
+atlas = ExtResource("2_jjvhh")
+region = Rect2(21, 87, 55, 3)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_344ge"]
+atlas = ExtResource("2_jjvhh")
+region = Rect2(20, 59, 55, 3)
+
 [node name="Main" type="Node2D" unique_id=356827938]
 script = ExtResource("1_bo1nx")
-debug_view = true
 line_straight = SubResource("AtlasTexture_jjvhh")
 line_diag_right = SubResource("AtlasTexture_kry3j")
 line_diag_left = SubResource("AtlasTexture_21xkr")
+line_left = SubResource("AtlasTexture_6bp64")
+line_right = SubResource("AtlasTexture_344ge")
 
 [node name="Player" parent="." unique_id=2088542105 instance=ExtResource("3_8gbba")]
 
