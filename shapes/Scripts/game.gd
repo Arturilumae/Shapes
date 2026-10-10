@@ -6,17 +6,16 @@ extends Node2D
 ## Pikslikunsti jaoks: kõik asukohad on täisarvud, diagonaalid on 45° ja
 ## pannakse kokku korduvatest tükkidest (mitte ei venitata).
 
-#debug
-@export_group("Debug")
-@export var debug_view := false      # näita, mida mäng hindab
-@export_range(0.1, 1.0) var debug_speed := 1.0   # 0.25 = neli korda aeglasemalt
-
-
-
 const LANES := 4
 const LINE_COLOR := Color("5dc8ff")
 const LINE_HIT_COLOR := Color("7dff8a")
 const LINE_HIT_miss := Color("84001dff")
+
+const FRAME := 1.0 / 60.0         # üks mängukaader (60 FPS)
+# Diagonaali täpsus vastavalt sellele, mitu kaadrit mööda:
+# 0–2 kaadrit -> 100%, 3 -> 80%, 4 -> 60%, 5 -> 40%, 6 -> 20%, edasi 0%
+const DIAG_GRADES := [1.0, 1.0, 1.0, 0.8, 0.6, 0.4, 0.2]
+const DIAG_EARLY_WINDOW := 0.3    # kui mitu sekundit varem tehtud liigutust veel diagonaaliga seotakse
 
 @export var level_dir := "res://levels/demo/"  # kaust VÕI konkreetne .json fail
 @export var scroll_speed := 110.0              # algkiirus px/s (chart'i "speeds" võib muuta)
@@ -54,10 +53,14 @@ var song_end := 0.0        # viimase lõigu lõpp (kasutatakse, kui laulu pole)
 var playing := false
 var use_music := false     # kas aeg tuleb laulust või sisemisest kellast
 var score := 0.0
-var total_line_time := 0.0
+var acc_sum := 0.0         # kõigi hinnatud asjade (sirged jooned + diagonaalid) täpsuste summa
+var acc_count := 0         # mitu asja on hinnatud
 var on_current_line := 0.0
 var total_current_line := 0.0
 var current_health := 0.0
+var transitions: Array = []   # diagonaalid: {t (ideaalne liikumise algus), from, to, done}
+var next_trans := 0           # esimene diagonaal, mis pole veel aegunud
+var last_diag := ""           # viimase diagonaali tulemus ekraanil
 
 
 func _ready() -> void:
@@ -85,10 +88,9 @@ func _ready() -> void:
 		push_warning("Laulu pole, kasutan sisemist kella.")
 
 	build_track(chart)
+	player.move_started.connect(_on_player_move_started)
 	queue_redraw()
 	playing = true
-	Engine.time_scale = debug_speed
-	music.pitch_scale = debug_speed
 	if use_music:
 		music.play()
 
@@ -273,6 +275,22 @@ func build_track(chart: Dictionary) -> void:
 		piece.position = Vector2(lane_x(seg["lane"]), top)
 		track.add_child(piece)
 		seg["rect"] = piece
+		# Hitbox = täpselt sirge tüki ulatus. Diagonaali ajal ei hinnata midagi.
+		# (bottom on ekraanil all = varasem aeg, top on ülal = hilisem aeg)
+		seg["hit_start"] = time_at_dist(-bottom)
+		seg["hit_end"] = time_at_dist(-top)
+
+	# 5) Diagonaalide hindamine: ideaalne hetk liikumise alustamiseks on see,
+	#    kui sirge joon löögijoonel lõpeb (diagonaali alumine ots jõuab sinna).
+	for i in count:
+		if trans_half[i] == 0:
+			continue
+		transitions.append({
+			"t": segments[i]["hit_end"],
+			"from": segments[i]["lane"],
+			"to": segments[i + 1]["lane"],
+			"done": false,
+		})
 
 	if shifted > 0:
 		push_warning("%d raja vahetust nihutati edasi, sest need olid liiga lähestikku. Suurem kiirus (Scroll Speed või chart'i \"speeds\") hoiab need muusikaga täpsemalt koos." % shifted)
@@ -308,15 +326,25 @@ func _process(delta: float) -> void:
 	track.position.y = roundi(hit_line_y + dist_at(t))
 
 	# Jäta vahele lõigud, mis on juba mööda läinud
-	while current < segments.size() and segments[current]["end"] <= t:
+	while current < segments.size() and segments[current]["hit_end"] <= t:
 		current += 1
 		if total_current_line > 0.0:
-			total_line_time += on_current_line / total_current_line
+			acc_sum += on_current_line / total_current_line
+			acc_count += 1
 		on_current_line = 0
 		total_current_line = 0
 
-	# Kas mõni lõik on praegu löögijoonel?
-	if current < segments.size() and segments[current]["start"] <= t:
+	# Diagonaalid, mille ajal mängija ei liikunud õigel ajal: 0%
+	while next_trans < transitions.size() and t > transitions[next_trans]["t"] + 6 * FRAME:
+		var tr: Dictionary = transitions[next_trans]
+		if not tr["done"]:
+			tr["done"] = true
+			acc_count += 1
+			last_diag = "Diagonaal: 0%"
+		next_trans += 1
+
+	# Kas mõni sirge joon on praegu löögijoonel? (diagonaali ajal on vahe, siis ei hinnata)
+	if current < segments.size() and segments[current]["hit_start"] <= t:
 		var seg: Dictionary = segments[current]
 		total_current_line += delta
 
@@ -338,15 +366,42 @@ func _process(delta: float) -> void:
 		# Joon muutub punasest roheliseks vastavalt sellele, kui suure osa ajast olid joonel
 		var ratio := on_current_line / total_current_line
 		seg["rect"].modulate = LINE_HIT_miss.lerp(LINE_HIT_COLOR, ratio)
-		if debug_view:
-			queue_redraw()
 
 
 func show_status(text: String) -> void:
 	var accuracy := 0.0
-	if total_line_time > 0.0 and current > 0:
-		accuracy = total_line_time / current * 100.0
-	judge_label.text = "%s\nskoor %d   täpsus %d%%" % [text, int(score), int(accuracy)]
+	if acc_count > 0:
+		accuracy = acc_sum / acc_count * 100.0
+	judge_label.text = "%s\nskoor %d   täpsus %d%%\n%s" % [text, int(score), int(accuracy), last_diag]
+
+
+## Mängija alustas liikumist teisele rajale (player.gd saadab selle signaali).
+## Leiame lähima hindamata diagonaali samas suunas ja hindame ajastust kaadrites.
+func _on_player_move_started(from_lane: int, to_lane: int, type: String) -> void:
+	if not playing:
+		return
+	var t := song_time
+	var dir := signi(to_lane - from_lane)
+	for i in range(next_trans, transitions.size()):
+		var tr: Dictionary = transitions[i]
+		if tr["done"]:
+			continue
+		if tr["t"] - t > DIAG_EARLY_WINDOW:
+			break   # järgmine diagonaal on veel liiga kaugel, see liigutus ei ole selle jaoks
+		if signi(tr["to"] - tr["from"]) != dir:
+			continue  # vale suund
+		tr["done"] = true
+		acc_count += 1
+		# Hüpe (Q/E) jätab diagonaali vahele: täpsus 0%
+		if type == "hop":
+			last_diag = "Diagonaal: 0% (hüpe)"
+			return
+		var frames := roundi(absf(t - tr["t"]) / FRAME)
+		var grade: float = DIAG_GRADES[frames] if frames < DIAG_GRADES.size() else 0.0
+		acc_sum += grade
+		score += 100.0 * grade
+		last_diag = "Diagonaal: %d%%" % int(grade * 100)
+		return
 
 
 func _on_song_finished() -> void:
@@ -370,15 +425,7 @@ func _draw() -> void:
 		var x := lane_x(lane) + 0.5
 		draw_line(Vector2(x, 0), Vector2(x, h), Color(1, 1, 1, 0.15), 1.0)
 	draw_line(Vector2(0, hit_line_y + 0.5), Vector2(play_width, hit_line_y + 0.5), Color(1, 1, 1, 0.4), 1.0)
-	
-	if not debug_view or not playing:
-		return
-	# Roheline kast = rada, mida mäng hetkel õigeks loeb
-	if current < segments.size() and segments[current]["start"] <= song_time:
-		var x := lane_x(segments[current]["lane"])
-		draw_rect(Rect2(x - 4, hit_line_y - 4, 9, 9), Color.GREEN, false, 1.0)
-	# Kollane täpp = mängija rada hindamise jaoks
-	draw_rect(Rect2(lane_x(player.lane) - 1, hit_line_y + 7, 3, 3), Color.YELLOW)
+
 
 # ---------- Joone tükid ----------
 

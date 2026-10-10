@@ -2,6 +2,8 @@ extends Node2D
 ## Mängija pall. Rajade asukohad ja kiiruse küsib game.gd-lt (vanemsõlm),
 ## nii et pall on alati täpselt rajajoonel ja libiseb mööda 45° diagonaali.
 
+signal move_started(from_lane: int, to_lane: int, type: String)   # game.gd hindab selle järgi diagonaale
+
 const LANES = 4
 var lane = 2      # rada, mille järgi mängu hinnatakse (alustab keskelt)
 var cd = false    # true = pall liigub parasjagu radade vahel
@@ -43,6 +45,7 @@ func target_pos(l: int) -> Vector2:
 
 func move(dir: int, type: String):
 	var target_lane: int = lane + dir
+	move_started.emit(lane, target_lane, type)
 
 	if type == "hop":
 		lane = target_lane
