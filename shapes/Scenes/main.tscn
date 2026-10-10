@@ -21,11 +21,11 @@ region = Rect2(128, 9, 55, 53)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6iyac"]
 atlas = ExtResource("2_jjvhh")
-region = Rect2(20, 59, 55, 3)
+region = Rect2(21, 87, 55, 3)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fdnlq"]
 atlas = ExtResource("2_jjvhh")
-region = Rect2(21, 87, 55, 3)
+region = Rect2(20, 59, 55, 3)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_uud5k"]
 atlas = ExtResource("6_21xkr")

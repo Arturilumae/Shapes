@@ -1,0 +1,9 @@
+{
+  "title": "tuljak1",
+  "audio": "tuljak1.ogg",
+  "bpm": 95.65,
+  "offset": 0.604,
+  "notes": [
+    { "beat": 4.0, "lane": 2, "length": 2.5 }
+  ]
+}
