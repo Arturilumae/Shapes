@@ -262,7 +262,6 @@ line_diag_right = SubResource("AtlasTexture_hptm8")
 line_diag_left = SubResource("AtlasTexture_d1ilt")
 line_left = SubResource("AtlasTexture_6iyac")
 line_right = SubResource("AtlasTexture_fdnlq")
-color_offset_px = 15
 
 [node name="Track" type="Node2D" parent="." unique_id=66785672]
 
