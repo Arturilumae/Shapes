@@ -456,14 +456,14 @@ volume_db = -5.0
 
 [node name="LoseAnimation" type="AnimatedSprite2D" parent="UI/GameOverDim" unique_id=1155206229]
 unique_name_in_owner = true
-position = Vector2(5.8062816, -3.0045242)
+position = Vector2(11.612577, -4.0060325)
 sprite_frames = SubResource("SpriteFrames_8bpks")
 animation = &"lose"
 
 [node name="WinAnimation" type="AnimatedSprite2D" parent="UI/GameOverDim" unique_id=894501620]
 unique_name_in_owner = true
 visible = false
-position = Vector2(7.741719, -4.0060325)
+position = Vector2(11.612578, -4.0060325)
 scale = Vector2(0.99999994, 1)
 sprite_frames = SubResource("SpriteFrames_ou5w1")
 animation = &"win"
