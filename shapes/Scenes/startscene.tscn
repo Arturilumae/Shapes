@@ -1008,14 +1008,14 @@ animations = [{
 }],
 "loop": 0,
 "name": &"default",
-"speed": 10.0
+"speed": 7.0
 }]
 
 [node name="Startscene" type="Node2D" unique_id=1017102002]
 script = ExtResource("1_pe1ww")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=791607810]
-position = Vector2(128, 70)
+position = Vector2(128, 71)
 sprite_frames = SubResource("SpriteFrames_g4v7s")
 autoplay = "default"
 frame = 13
