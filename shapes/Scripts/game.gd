@@ -125,6 +125,8 @@ void fragment() {
 @onready var score_label: Label = get_node_or_null("%ScoreLabel")
 @onready var accuracy_label: Label = get_node_or_null("%AccuracyLabel")
 @onready var game_over_menu: ColorRect = get_node("%GameOverDim")
+@onready var lose_animation: AnimatedSprite2D = get_node_or_null("%LoseAnimation")
+@onready var glassbreaksfx: AudioStreamPlayer = get_node_or_null("%GlassBreakSFX")
 
 #endregion
 
@@ -783,6 +785,11 @@ func game_over() -> void:
 	if judge_label:
 		judge_label.text = "MÄNG LÄBI!\nElud said otsa."
 	game_over_menu.visible = true
+	if lose_animation:
+		lose_animation.visible = true
+		glassbreaksfx.play()
+		lose_animation.frame = 0 # Alustab esimesest kaadrist
+		lose_animation.play("lose") # "lose" on Sprite Frames paneelil pandud nimi
 
 #endregion
 
