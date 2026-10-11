@@ -10,7 +10,7 @@ extends Node2D
 ##   - täpsus: iga kaader, kui kaugel on nõela hitbox-ring joone keskjoonest
 ##     (sama mõõt mis värvil ja eludel, kehtib ka diagonaalidel), ajaga kaalutud
 ##   - diagonaalid ja hüpped: lisaks liikumise alustamise ajastus (kaadrites)
-##   - skoor: aeg õigel rajal + üleminekute ajastus
+##   - skoor: aeg joonel (ka diagonaalidel) + üleminekute ajastus
 ##   - elud: nõela hitbox-ringi kaugus joone keskjoonest (pikslites)
 
 
@@ -130,6 +130,8 @@ void fragment() {
 @onready var win_animation: AnimatedSprite2D = get_node_or_null("%WinAnimation")
 @onready var win_anim_tuba: AnimatedSprite2D = get_node_or_null("%WinAnimTuba")
 @onready var win_anim_sisemus: AnimatedSprite2D = get_node_or_null("%WinAnimSisemus")
+@onready var menu_button: Control = get_node_or_null("%GameOverDim/MenuButton")
+@onready var restart_button: Control = get_node_or_null("%GameOverDim/RestartButton")
 
 #endregion
 
@@ -557,14 +559,11 @@ func _expire_transitions(t: float) -> void:
 		next_trans += 1
 
 
-## Sirge joon löögijoonel: skoor raja järgi.
-## (Ülemineku ajal on sirgete joonte vahel tühimik, siis ei hinnata.)
-func _judge_straight_line(delta: float, t: float) -> void:
+## Sirge joon löögijoonel: uuenda hinnangu silti.
+## (Skoor tuleb _judge_accuracy'st, et see koguneks ka diagonaalidel.)
+func _judge_straight_line(_delta: float, t: float) -> void:
 	if current >= segments.size() or segments[current]["hit_start"] > t:
 		return
-	var seg: Dictionary = segments[current]
-	if player.lane == seg["lane"]:
-		score += 100.0 * delta
 	_update_judge_label()
 
 
@@ -577,6 +576,7 @@ func _judge_accuracy(delta: float) -> void:
 	var g := 1.0 - clampf((last_dist - hitbox_radius) / maxf(accuracy_falloff_px, 0.001), 0.0, 1.0)
 	acc_sum += g * delta
 	acc_weight += delta
+	score += 100.0 * g * delta   # 100 punkti sekundis, kui oled täpselt joonel (ka diagonaalil)
 
 
 func _add_transition_accuracy(grade: float) -> void:
@@ -775,39 +775,43 @@ func _update_judge_label() -> void:
 
 
 func _on_song_finished() -> void:
+	_set_buttons_visible(false)
 	playing = false
 	_update_judge_label()
-	
-	if game_over_menu: 
+	if game_over_menu:
 		game_over_menu.visible = true
-		
-	# Kontrollime, kas praegu on Level 3 (vaatame kausta nime)
-	if "level_3" in level_dir.to_lower(): # Muuda "level3" enda õige kausta nime vastu!
-		_play_level3_win_cutscene()
-	else:
-		# Tavaliste levelite võiduanimatsioon
-		if win_animation:
-			win_animation.visible = true
-			win_animation.play("win")
+		_set_buttons_visible(true) 
+	  # nupud peitu animatsiooni ajaks
+	if "level_3" in level_dir.to_lower() or name.to_lower() == "level_3":
+		_set_buttons_visible(false) 
+		await _play_level3_win_cutscene()
+	elif win_animation:
+		await _play_once(win_anim_tuba, "win")
+
+	_set_buttons_visible(true)    # animatsioon läbi, nupud tagasi
 
 
-# UUS FUNKTSIOON: Level 3 spetsiaalne vaheklipp
+## Level 3 vaheklipp: tuba, siis grammofoni sisemus
 func _play_level3_win_cutscene() -> void:
-	if win_anim_tuba and win_anim_sisemus:
-		# 1. Näitame tuba
-		win_anim_tuba.visible = true
-		win_anim_tuba.play("tuba")
-		win_anim_sisemus.visible = false
-		
-		# Ootame 3 sekundit (et mängija saaks tuba vaadata)
-		await get_tree().create_timer(3.0).timeout
-		
-		# 2. Peidame toa ja näitame grammofoni sisemust
-		win_anim_tuba.visible = false
-		win_anim_sisemus.visible = true
-		win_anim_sisemus.play("sisemus")
-		
+	if not (win_anim_tuba and win_anim_sisemus):
+		return
+	win_animation.visible = true
+	await _play_once(win_animation, "win")
+	win_animation.visible = false
+	win_anim_tuba.visible = true
+	await _play_once(win_anim_tuba, "tuba")
+	win_anim_tuba.visible = false
+	win_anim_sisemus.visible = true
+	await _play_loop(win_anim_sisemus, "default")
+	
+	
+	
 
+	win_anim_tuba.visible = false
+	await _play_once(win_anim_sisemus, "sisemus")
+	# Viimane kaader jääb ekraanile (sisemus ei peitu)
+	
+	_set_buttons_visible(true)
 
 
 func game_over() -> void:
@@ -817,12 +821,54 @@ func game_over() -> void:
 	if judge_label:
 		judge_label.text = "MÄNG LÄBI!\nElud said otsa."
 	game_over_menu.visible = true
-	if lose_animation:
-		lose_animation.visible = true
-		glassbreaksfx.play()
-		lose_animation.frame = 0 # Alustab esimesest kaadrist
-		lose_animation.play("lose") # "lose" on Sprite Frames paneelil pandud nimi
+	_set_buttons_visible(false)   # nupud peitu animatsiooni ajaks
 
+	if lose_animation:
+		if glassbreaksfx:
+			glassbreaksfx.play()
+		await _play_once(lose_animation, "lose")
+
+	_set_buttons_visible(true)    # animatsioon läbi, nupud tagasi
+
+
+func _set_buttons_visible(v: bool) -> void:
+	if menu_button:
+		menu_button.visible = v
+	if restart_button:
+		restart_button.visible = v
+
+
+## Mängi animatsioon täpselt üks kord algusest lõpuni ja oota, kuni see lõpeb.
+## Loop lülitatakse välja, nii et see ei jää kordama.
+func _play_once(anim: AnimatedSprite2D, anim_name: String) -> void:
+	if anim == null or anim.sprite_frames == null:
+		push_warning("Animatsiooni sõlm või SpriteFrames puudub: " + anim_name)
+		return
+	if not anim.sprite_frames.has_animation(anim_name):
+		push_warning("%s: animatsiooni \"%s\" ei ole. Olemas: %s"
+			% [anim.name, anim_name, anim.sprite_frames.get_animation_names()])
+		return
+	anim.sprite_frames.set_animation_loop(anim_name, false)
+	anim.visible = true
+	anim.stop()                 # lähtesta (ka siis, kui autoplay oli selle juba läbi mänginud)
+	anim.animation = anim_name
+	anim.frame = 0
+	anim.speed_scale = 1.0
+	anim.play(anim_name)
+	await anim.animation_finished
+
+func _play_loop(anim: AnimatedSprite2D, anim_name: String) -> void:
+	if anim == null or anim.sprite_frames == null:
+		return
+	if not anim.sprite_frames.has_animation(anim_name):
+		push_warning("%s: animatsiooni \"%s\" ei ole. Olemas: %s"
+			% [anim.name, anim_name, anim.sprite_frames.get_animation_names()])
+		return
+	anim.sprite_frames.set_animation_loop(anim_name, true)
+	anim.visible = true
+	anim.stop()
+	anim.frame = 0
+	anim.play(anim_name)
 #endregion
 
 

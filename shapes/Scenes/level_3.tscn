@@ -654,6 +654,7 @@ position = Vector2(7.741719, -4.0060325)
 scale = Vector2(0.99999994, 1)
 sprite_frames = SubResource("SpriteFrames_8bpks")
 animation = &"tuba"
+frame_progress = 0.3396652
 
 [node name="WinAnimSisemus" type="AnimatedSprite2D" parent="UI/GameOverDim" unique_id=225466162]
 unique_name_in_owner = true
@@ -663,6 +664,8 @@ scale = Vector2(0.99999994, 1)
 sprite_frames = SubResource("SpriteFrames_ds67j")
 
 [node name="MenuButton" type="TextureButton" parent="UI/GameOverDim" unique_id=180670384]
+unique_name_in_owner = true
+visible = false
 texture_filter = 1
 layout_mode = 0
 offset_left = 68.70774
@@ -688,6 +691,8 @@ theme_override_font_sizes/font_size = 7
 text = "Back"
 
 [node name="RestartButton" type="TextureButton" parent="UI/GameOverDim" unique_id=2138741415]
+unique_name_in_owner = true
+visible = false
 texture_filter = 1
 layout_mode = 0
 offset_left = 68.707756
