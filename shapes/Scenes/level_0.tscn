@@ -4,6 +4,8 @@
 [ext_resource type="PackedScene" uid="uid://dbkwdxovtqdhw" path="res://Scenes/player.tscn" id="4_n6y2o"]
 [ext_resource type="Texture2D" uid="uid://bppuq2ogwhtw6" path="res://Art/ghost-idle.png" id="5_3hmlb"]
 [ext_resource type="Texture2D" uid="uid://bmg61ntaktv07" path="res://Art/ghost-push.png" id="6_bb0r2"]
+[ext_resource type="AudioStream" uid="uid://2ve6oios8dq6" path="res://sfx/glassbreak.ogg" id="6_uu2ix"]
+[ext_resource type="Texture2D" uid="uid://btpghqv3grgjv" path="res://Art/death-Sheet.png" id="7_n6y2o"]
 [ext_resource type="Texture2D" uid="uid://bsoddqumej7wl" path="res://Art/ghost-pull.png" id="7_y32iv"]
 [ext_resource type="AudioStream" uid="uid://payvlo0xhfo7" path="res://levels/demo/tuljak1.ogg" id="8_o6ba6"]
 [ext_resource type="Texture2D" uid="uid://dp5cqhws2qbt3" path="res://Art/taust.png" id="9_ta6og"]
@@ -20,15 +22,86 @@ region = Rect2(214, 6, 27, 6)
 atlas = ExtResource("10_n5v4w")
 region = Rect2(207, 20, 40, 7)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_oihvb"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_oovug"]
+atlas = ExtResource("7_n6y2o")
+region = Rect2(0, 0, 260, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8i23i"]
+atlas = ExtResource("7_n6y2o")
+region = Rect2(260, 0, 260, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6ssoq"]
+atlas = ExtResource("7_n6y2o")
+region = Rect2(520, 0, 260, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_imks0"]
+atlas = ExtResource("7_n6y2o")
+region = Rect2(780, 0, 260, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dlmop"]
+atlas = ExtResource("7_n6y2o")
+region = Rect2(1040, 0, 260, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sda17"]
+atlas = ExtResource("7_n6y2o")
+region = Rect2(1300, 0, 260, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1fal7"]
+atlas = ExtResource("7_n6y2o")
+region = Rect2(1560, 0, 260, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gcla0"]
+atlas = ExtResource("7_n6y2o")
+region = Rect2(1820, 0, 260, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vr6f4"]
+atlas = ExtResource("7_n6y2o")
+region = Rect2(2080, 0, 260, 144)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_3hmlb"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oovug")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8i23i")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6ssoq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_imks0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dlmop")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sda17")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1fal7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gcla0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vr6f4")
+}],
+"loop": 0,
+"name": &"lose",
+"speed": 8.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bb0r2"]
 atlas = ExtResource("10_488qb")
 region = Rect2(42, 59, 62, 20)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_5xren"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_y32iv"]
 atlas = ExtResource("10_488qb")
 region = Rect2(42, 29, 62, 19)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_uu2ix"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_o6ba6"]
 atlas = ExtResource("10_488qb")
 region = Rect2(41, 92, 62, 20)
 
@@ -294,54 +367,39 @@ theme_override_font_sizes/font_size = 7
 text = "1"
 horizontal_alignment = 1
 
-[node name="GameOverDim" type="ColorRect" parent="UI" unique_id=1290234459]
+[node name="GameOverDim" type="ColorRect" parent="UI" unique_id=1532584922]
 unique_name_in_owner = true
 visible = false
-offset_left = -48.0
-offset_top = -48.0
-offset_right = -8.0
-offset_bottom = -8.0
-scale = Vector2(16.405792, 12.863365)
+offset_left = 120.00001
+offset_top = 75.0
+offset_right = 160.0
+offset_bottom = 115.0
+scale = Vector2(1.0333623, 0.99849415)
 color = Color(0, 0, 0, 0.49411765)
 
-[node name="RestartButton" type="TextureButton" parent="UI/GameOverDim" unique_id=743869904]
+[node name="GlassBreakSFX" type="AudioStreamPlayer" parent="UI/GameOverDim" unique_id=484143235]
+unique_name_in_owner = true
+stream = ExtResource("6_uu2ix")
+
+[node name="LoseAnimation" type="AnimatedSprite2D" parent="UI/GameOverDim" unique_id=47232556]
+unique_name_in_owner = true
+position = Vector2(5.8062816, -3.0045242)
+sprite_frames = SubResource("SpriteFrames_3hmlb")
+animation = &"lose"
+
+[node name="MenuButton" type="TextureButton" parent="UI/GameOverDim" unique_id=70455784]
 texture_filter = 1
 layout_mode = 0
-offset_left = 6.8268576
-offset_top = 7.4630547
-offset_right = 68.82686
-offset_bottom = 27.463055
-scale = Vector2(0.07290806, 0.08145282)
-texture_normal = SubResource("AtlasTexture_oihvb")
-texture_pressed = SubResource("AtlasTexture_5xren")
-texture_hover = SubResource("AtlasTexture_uu2ix")
+offset_left = 68.70774
+offset_top = 32.048256
+offset_right = 130.70773
+offset_bottom = 52.048256
+scale = Vector2(0.8239142, 0.92047614)
+texture_normal = SubResource("AtlasTexture_bb0r2")
+texture_pressed = SubResource("AtlasTexture_y32iv")
+texture_hover = SubResource("AtlasTexture_o6ba6")
 
-[node name="Label" type="Label" parent="UI/GameOverDim/RestartButton" unique_id=658314079]
-texture_filter = 1
-layout_mode = 0
-offset_left = 11.704556
-offset_top = 4.7720976
-offset_right = 51.616634
-offset_bottom = 14.316291
-scale = Vector2(1.40905, 1.40905)
-theme_override_colors/font_color = Color(0.28627452, 0.1254902, 0.27058825, 1)
-theme_override_fonts/font = ExtResource("11_koqiv")
-theme_override_font_sizes/font_size = 7
-text = "Restart"
-
-[node name="MenuButton" type="TextureButton" parent="UI/GameOverDim" unique_id=1250321192]
-texture_filter = 1
-layout_mode = 0
-offset_left = 7.131628
-offset_top = 9.95074
-offset_right = 69.13163
-offset_bottom = 29.95074
-scale = Vector2(0.072908066, 0.081452824)
-texture_normal = SubResource("AtlasTexture_oihvb")
-texture_pressed = SubResource("AtlasTexture_5xren")
-texture_hover = SubResource("AtlasTexture_uu2ix")
-
-[node name="Label" type="Label" parent="UI/GameOverDim/MenuButton" unique_id=1432541323]
+[node name="Label" type="Label" parent="UI/GameOverDim/MenuButton" unique_id=1301924230]
 texture_filter = 1
 layout_mode = 0
 offset_left = 16.720798
@@ -353,6 +411,31 @@ theme_override_colors/font_color = Color(0.28627452, 0.1254902, 0.27058825, 1)
 theme_override_fonts/font = ExtResource("11_koqiv")
 theme_override_font_sizes/font_size = 7
 text = "Back"
+
+[node name="RestartButton" type="TextureButton" parent="UI/GameOverDim" unique_id=790693396]
+texture_filter = 1
+layout_mode = 0
+offset_left = 68.707756
+offset_top = 4.006032
+offset_right = 130.70776
+offset_bottom = 24.006031
+scale = Vector2(0.82391405, 0.9204761)
+texture_normal = SubResource("AtlasTexture_bb0r2")
+texture_pressed = SubResource("AtlasTexture_y32iv")
+texture_hover = SubResource("AtlasTexture_o6ba6")
+
+[node name="Label" type="Label" parent="UI/GameOverDim/RestartButton" unique_id=1227742608]
+texture_filter = 1
+layout_mode = 0
+offset_left = 8.221727
+offset_top = 5.4401646
+offset_right = 48.133804
+offset_bottom = 14.984359
+scale = Vector2(1.2250737, 1.2250737)
+theme_override_colors/font_color = Color(0.28627452, 0.1254902, 0.27058825, 1)
+theme_override_fonts/font = ExtResource("11_koqiv")
+theme_override_font_sizes/font_size = 7
+text = "Try Again"
 
 [node name="HealthBar" type="TextureProgressBar" parent="." unique_id=1481913668]
 unique_name_in_owner = true
@@ -379,5 +462,5 @@ stream = ExtResource("11_oihvb")
 volume_db = -13.448
 pitch_scale = 0.66
 
-[connection signal="pressed" from="UI/GameOverDim/RestartButton" to="." method="_on_restart_button_pressed"]
 [connection signal="pressed" from="UI/GameOverDim/MenuButton" to="." method="_on_menu_button_pressed"]
+[connection signal="pressed" from="UI/GameOverDim/RestartButton" to="." method="_on_restart_button_pressed"]

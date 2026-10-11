@@ -2,7 +2,7 @@ extends Node2D
 ## Tiitrid kerivad alt üles. Mis tahes klahv või tiitrite lõpp viib tagasi.
 
 @export var scroll_speed := 20.0                      # px sekundis
-@export var next_scene := "res://main_menu.tscn"      # kuhu pärast minna (või main.tscn)
+@export var next_scene := "res://Scenes/MainMenu.tscn"      # kuhu pärast minna (või main.tscn)
 
 @onready var label: Label = $CreditsLabel
 var y := 0.0

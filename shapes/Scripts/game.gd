@@ -127,6 +127,7 @@ void fragment() {
 @onready var game_over_menu: ColorRect = get_node("%GameOverDim")
 @onready var lose_animation: AnimatedSprite2D = get_node_or_null("%LoseAnimation")
 @onready var glassbreaksfx: AudioStreamPlayer = get_node_or_null("%GlassBreakSFX")
+@onready var win_animation: AnimatedSprite2D = get_node_or_null("%WinAnimation")
 
 #endregion
 
@@ -776,6 +777,9 @@ func _on_song_finished() -> void:
 	_update_judge_label()
 	if game_over_menu: 
 		game_over_menu.visible = true
+	if win_animation:
+		win_animation.visible = true
+		win_animation.play("win")
 
 
 func game_over() -> void:
