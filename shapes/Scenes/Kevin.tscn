@@ -1,0 +1,112 @@
+[gd_scene format=3 uid="uid://woggupos8f8f"]
+
+[ext_resource type="Texture2D" uid="uid://busm5lom88pir" path="res://Art/mainScreene.png" id="1_ivhji"]
+[ext_resource type="Texture2D" uid="uid://vgxqbl6fwk23" path="res://Art/buttons.png" id="2_vj2as"]
+[ext_resource type="Script" uid="uid://cdskmsw07xeq5" path="res://Scripts/playButton.gd" id="4_21uh7"]
+[ext_resource type="FontFile" uid="uid://oxkynrojvw1d" path="res://Art/aseprite.otf" id="4_ivhji"]
+[ext_resource type="Texture2D" uid="uid://cdb0ly7lqkwbx" path="res://Art/text.png" id="5_vj2as"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nvly8"]
+atlas = ExtResource("2_vj2as")
+region = Rect2(42, 59, 62, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0msvk"]
+atlas = ExtResource("2_vj2as")
+region = Rect2(42, 29, 62, 19)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nyimn"]
+atlas = ExtResource("2_vj2as")
+region = Rect2(41, 92, 62, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g4v7s"]
+atlas = ExtResource("5_vj2as")
+region = Rect2(4, 5, 56, 15)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_57qmd"]
+atlas = ExtResource("5_vj2as")
+region = Rect2(6, 28, 47, 17)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yf5fn"]
+atlas = ExtResource("5_vj2as")
+region = Rect2(11, 52, 42, 15)
+
+[node name="Main2" type="Node2D" unique_id=356827938]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=277850621]
+
+[node name="Sprite2D2" type="Sprite2D" parent="Camera2D" unique_id=2083720919]
+texture_filter = 1
+texture = ExtResource("1_ivhji")
+
+[node name="Button" type="TextureButton" parent="Camera2D/Sprite2D2" unique_id=1410402240]
+texture_filter = 1
+offset_left = 47.0
+offset_top = -8.0
+offset_right = 109.0
+offset_bottom = 12.0
+texture_normal = SubResource("AtlasTexture_nvly8")
+texture_pressed = SubResource("AtlasTexture_0msvk")
+texture_hover = SubResource("AtlasTexture_nyimn")
+script = ExtResource("4_21uh7")
+
+[node name="Sprite2D" type="Sprite2D" parent="Camera2D/Sprite2D2/Button" unique_id=234645490]
+position = Vector2(32, 10)
+texture = SubResource("AtlasTexture_g4v7s")
+
+[node name="Button2" type="TextureButton" parent="Camera2D/Sprite2D2" unique_id=257983640]
+texture_filter = 1
+offset_left = 47.0
+offset_top = 17.0
+offset_right = 109.0
+offset_bottom = 37.0
+texture_normal = SubResource("AtlasTexture_nvly8")
+texture_pressed = SubResource("AtlasTexture_0msvk")
+texture_hover = SubResource("AtlasTexture_nyimn")
+
+[node name="Label" type="Label" parent="Camera2D/Sprite2D2/Button2" unique_id=1146127398]
+visible = false
+texture_filter = 1
+layout_mode = 0
+offset_right = 62.0
+offset_bottom = 20.0
+theme_override_colors/font_color = Color(0.1955451, 0.1955451, 0.19554508, 1)
+theme_override_fonts/font = ExtResource("4_ivhji")
+theme_override_font_sizes/font_size = 8
+text = "Settings"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="Camera2D/Sprite2D2/Button2" unique_id=748432323]
+position = Vector2(30, 9)
+texture = SubResource("AtlasTexture_57qmd")
+
+[node name="Button3" type="TextureButton" parent="Camera2D/Sprite2D2" unique_id=1501913137]
+texture_filter = 1
+offset_left = 47.0
+offset_top = 41.0
+offset_right = 109.0
+offset_bottom = 61.0
+texture_normal = SubResource("AtlasTexture_nvly8")
+texture_pressed = SubResource("AtlasTexture_0msvk")
+texture_hover = SubResource("AtlasTexture_nyimn")
+
+[node name="Label" type="Label" parent="Camera2D/Sprite2D2/Button3" unique_id=1024813399]
+visible = false
+texture_filter = 1
+layout_mode = 0
+offset_right = 62.0
+offset_bottom = 20.0
+theme_override_colors/font_color = Color(0.1955451, 0.1955451, 0.19554508, 1)
+theme_override_fonts/font = ExtResource("4_ivhji")
+theme_override_font_sizes/font_size = 8
+text = "Credits"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="Camera2D/Sprite2D2/Button3" unique_id=1432526040]
+position = Vector2(32, 8)
+texture = SubResource("AtlasTexture_yf5fn")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1455518083]
+
+[connection signal="pressed" from="Camera2D/Sprite2D2/Button" to="Camera2D/Sprite2D2/Button" method="_on_pressed"]
