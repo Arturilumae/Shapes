@@ -10,6 +10,35 @@
 [ext_resource type="Texture2D" uid="uid://vgxqbl6fwk23" path="res://Art/buttons.png" id="10_488qb"]
 [ext_resource type="Texture2D" uid="uid://81d17xi7k6kw" path="res://Art/elud.png" id="10_n5v4w"]
 [ext_resource type="FontFile" uid="uid://oxkynrojvw1d" path="res://Art/aseprite.otf" id="11_koqiv"]
+[ext_resource type="AudioStream" uid="uid://c5be46jjuhsnq" path="res://sfx/move.ogg" id="11_oihvb"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7wphs"]
+atlas = ExtResource("10_n5v4w")
+region = Rect2(214, 6, 27, 6)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k2e45"]
+atlas = ExtResource("10_n5v4w")
+region = Rect2(207, 20, 40, 7)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oihvb"]
+atlas = ExtResource("10_488qb")
+region = Rect2(42, 59, 62, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5xren"]
+atlas = ExtResource("10_488qb")
+region = Rect2(42, 29, 62, 19)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uu2ix"]
+atlas = ExtResource("10_488qb")
+region = Rect2(41, 92, 62, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jtv8s"]
+atlas = ExtResource("10_n5v4w")
+region = Rect2(214, 63, 37, 75)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c81s1"]
+atlas = ExtResource("10_n5v4w")
+region = Rect2(168, 64, 37, 75)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jkdf5"]
 atlas = ExtResource("5_3hmlb")
@@ -107,7 +136,7 @@ region = Rect2(384, 0, 64, 64)
 atlas = ExtResource("7_y32iv")
 region = Rect2(448, 0, 64, 64)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_6bp64"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_5xren"]
 animations = [{
 "frames": [{
 "duration": 1.0,
@@ -197,50 +226,11 @@ animations = [{
 "speed": 20.0
 }]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_7wphs"]
-atlas = ExtResource("10_n5v4w")
-region = Rect2(214, 6, 27, 6)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_k2e45"]
-atlas = ExtResource("10_n5v4w")
-region = Rect2(207, 20, 40, 7)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_oihvb"]
-atlas = ExtResource("10_488qb")
-region = Rect2(42, 59, 62, 20)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_5xren"]
-atlas = ExtResource("10_488qb")
-region = Rect2(42, 29, 62, 19)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_uu2ix"]
-atlas = ExtResource("10_488qb")
-region = Rect2(41, 92, 62, 20)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_jtv8s"]
-atlas = ExtResource("10_n5v4w")
-region = Rect2(214, 63, 37, 75)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_c81s1"]
-atlas = ExtResource("10_n5v4w")
-region = Rect2(168, 64, 37, 75)
-
 [node name="level_0" type="Node2D" unique_id=356827938]
 script = ExtResource("1_hsdmu")
 level_dir = "res://levels/demo/tutorial.json"
 
 [node name="Track" type="Node2D" parent="." unique_id=66785672]
-
-[node name="Player" parent="." unique_id=2088542105 instance=ExtResource("4_n6y2o")]
-z_index = 10
-
-[node name="kalle" type="AnimatedSprite2D" parent="Player" unique_id=48195227]
-z_index = 10
-position = Vector2(-8, -24)
-sprite_frames = SubResource("SpriteFrames_6bp64")
-animation = &"pull"
-frame_progress = 0.521047
-centered = false
 
 [node name="Music" type="AudioStreamPlayer2D" parent="." unique_id=707187183]
 stream = ExtResource("8_o6ba6")
@@ -374,6 +364,20 @@ value = 50.0
 fill_mode = 3
 texture_over = SubResource("AtlasTexture_jtv8s")
 texture_progress = SubResource("AtlasTexture_c81s1")
+
+[node name="Player" parent="." unique_id=2088542105 instance=ExtResource("4_n6y2o")]
+
+[node name="kalle" type="AnimatedSprite2D" parent="Player" unique_id=1879659540]
+z_index = 10
+position = Vector2(-8, -24)
+sprite_frames = SubResource("SpriteFrames_5xren")
+animation = &"pull"
+centered = false
+
+[node name="MoveSound" type="AudioStreamPlayer" parent="Player" unique_id=1957413253]
+stream = ExtResource("11_oihvb")
+volume_db = -13.448
+pitch_scale = 0.66
 
 [connection signal="pressed" from="UI/GameOverDim/RestartButton" to="." method="_on_restart_button_pressed"]
 [connection signal="pressed" from="UI/GameOverDim/MenuButton" to="." method="_on_menu_button_pressed"]

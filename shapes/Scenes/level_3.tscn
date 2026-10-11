@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://81d17xi7k6kw" path="res://Art/elud.png" id="10_s80er"]
 [ext_resource type="FontFile" uid="uid://oxkynrojvw1d" path="res://Art/aseprite.otf" id="11_8jhox"]
 [ext_resource type="Texture2D" uid="uid://vgxqbl6fwk23" path="res://Art/buttons.png" id="12_fxnjf"]
+[ext_resource type="AudioStream" uid="uid://c5be46jjuhsnq" path="res://sfx/move.ogg" id="13_n4vm5"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ynf5e"]
 atlas = ExtResource("2_c81s1")
@@ -32,6 +33,34 @@ region = Rect2(16, 83, 55, 7)
 [sub_resource type="AtlasTexture" id="AtlasTexture_fdnlq"]
 atlas = ExtResource("3_n4vm5")
 region = Rect2(16, 68, 55, 7)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7wphs"]
+atlas = ExtResource("10_s80er")
+region = Rect2(214, 6, 27, 6)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k2e45"]
+atlas = ExtResource("10_s80er")
+region = Rect2(207, 20, 40, 7)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n4vm5"]
+atlas = ExtResource("12_fxnjf")
+region = Rect2(42, 59, 62, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fxnjf"]
+atlas = ExtResource("12_fxnjf")
+region = Rect2(42, 29, 62, 19)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xjeco"]
+atlas = ExtResource("12_fxnjf")
+region = Rect2(41, 92, 62, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jtv8s"]
+atlas = ExtResource("10_s80er")
+region = Rect2(214, 63, 37, 75)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c81s1"]
+atlas = ExtResource("10_s80er")
+region = Rect2(168, 64, 37, 75)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jkdf5"]
 atlas = ExtResource("5_xjeco")
@@ -129,7 +158,7 @@ region = Rect2(384, 0, 64, 64)
 atlas = ExtResource("7_ki8bc")
 region = Rect2(448, 0, 64, 64)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_6bp64"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_fxnjf"]
 animations = [{
 "frames": [{
 "duration": 1.0,
@@ -219,34 +248,6 @@ animations = [{
 "speed": 20.0
 }]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_7wphs"]
-atlas = ExtResource("10_s80er")
-region = Rect2(214, 6, 27, 6)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_k2e45"]
-atlas = ExtResource("10_s80er")
-region = Rect2(207, 20, 40, 7)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_n4vm5"]
-atlas = ExtResource("12_fxnjf")
-region = Rect2(42, 59, 62, 20)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_fxnjf"]
-atlas = ExtResource("12_fxnjf")
-region = Rect2(42, 29, 62, 19)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_xjeco"]
-atlas = ExtResource("12_fxnjf")
-region = Rect2(41, 92, 62, 20)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_jtv8s"]
-atlas = ExtResource("10_s80er")
-region = Rect2(214, 63, 37, 75)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_c81s1"]
-atlas = ExtResource("10_s80er")
-region = Rect2(168, 64, 37, 75)
-
 [node name="level_3" type="Node2D" unique_id=356827938]
 script = ExtResource("1_jtv8s")
 level_dir = "res://levels/demo/kunglarahvas_chart.json"
@@ -259,17 +260,6 @@ line_right = SubResource("AtlasTexture_fdnlq")
 color_offset_px = 15
 
 [node name="Track" type="Node2D" parent="." unique_id=66785672]
-
-[node name="Player" parent="." unique_id=2088542105 instance=ExtResource("4_fxnjf")]
-z_index = 10
-
-[node name="kalle" type="AnimatedSprite2D" parent="Player" unique_id=48195227]
-z_index = 10
-position = Vector2(-8, -24)
-sprite_frames = SubResource("SpriteFrames_6bp64")
-animation = &"pull"
-frame_progress = 0.521047
-centered = false
 
 [node name="Music" type="AudioStreamPlayer2D" parent="." unique_id=707187183]
 stream = ExtResource("8_nbwsh")
@@ -403,6 +393,20 @@ value = 50.0
 fill_mode = 3
 texture_over = SubResource("AtlasTexture_jtv8s")
 texture_progress = SubResource("AtlasTexture_c81s1")
+
+[node name="Player" parent="." unique_id=2088542105 instance=ExtResource("4_fxnjf")]
+
+[node name="kalle" type="AnimatedSprite2D" parent="Player" unique_id=1969505393]
+z_index = 10
+position = Vector2(-8, -24)
+sprite_frames = SubResource("SpriteFrames_fxnjf")
+animation = &"pull"
+centered = false
+
+[node name="MoveSound" type="AudioStreamPlayer" parent="Player" unique_id=1945928972]
+stream = ExtResource("13_n4vm5")
+volume_db = -13.448
+pitch_scale = 0.66
 
 [connection signal="pressed" from="UI/GameOverDim/RestartButton" to="." method="_on_restart_button_pressed"]
 [connection signal="pressed" from="UI/GameOverDim/MenuButton" to="." method="_on_menu_button_pressed"]

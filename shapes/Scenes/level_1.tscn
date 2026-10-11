@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://dp5cqhws2qbt3" path="res://Art/taust.png" id="9_yltlr"]
 [ext_resource type="Texture2D" uid="uid://81d17xi7k6kw" path="res://Art/elud.png" id="10_6ssoq"]
 [ext_resource type="FontFile" uid="uid://oxkynrojvw1d" path="res://Art/aseprite.otf" id="11_imks0"]
+[ext_resource type="AudioStream" uid="uid://c5be46jjuhsnq" path="res://sfx/move.ogg" id="13_6r07y"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ynf5e"]
 atlas = ExtResource("2_uy8f0")
@@ -52,6 +53,14 @@ region = Rect2(42, 29, 62, 19)
 [sub_resource type="AtlasTexture" id="AtlasTexture_yltlr"]
 atlas = ExtResource("8_6ioyp")
 region = Rect2(41, 92, 62, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_af3po"]
+atlas = ExtResource("10_6ssoq")
+region = Rect2(214, 63, 37, 75)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uy8f0"]
+atlas = ExtResource("10_6ssoq")
+region = Rect2(168, 64, 37, 75)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jkdf5"]
 atlas = ExtResource("5_oovug")
@@ -149,7 +158,7 @@ region = Rect2(384, 0, 64, 64)
 atlas = ExtResource("7_8yhm2")
 region = Rect2(448, 0, 64, 64)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_af3po"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_6ioyp"]
 animations = [{
 "frames": [{
 "duration": 1.0,
@@ -238,14 +247,6 @@ animations = [{
 "name": &"push",
 "speed": 20.0
 }]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_af3po"]
-atlas = ExtResource("10_6ssoq")
-region = Rect2(214, 63, 37, 75)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_uy8f0"]
-atlas = ExtResource("10_6ssoq")
-region = Rect2(168, 64, 37, 75)
 
 [node name="Level1" type="Node2D" unique_id=356827938]
 script = ExtResource("1_af3po")
@@ -381,16 +382,6 @@ theme_override_fonts/font = ExtResource("11_imks0")
 theme_override_font_sizes/font_size = 7
 text = "Back"
 
-[node name="Player" parent="." unique_id=2088542105 instance=ExtResource("4_6ioyp")]
-z_index = 10
-
-[node name="kalle" type="AnimatedSprite2D" parent="Player" unique_id=538992437]
-z_index = 10
-position = Vector2(-8, -24)
-sprite_frames = SubResource("SpriteFrames_af3po")
-animation = &"pull"
-centered = false
-
 [node name="HealthBar" type="TextureProgressBar" parent="." unique_id=1044431239]
 unique_name_in_owner = true
 offset_left = 214.0
@@ -401,6 +392,20 @@ value = 50.0
 fill_mode = 3
 texture_over = SubResource("AtlasTexture_af3po")
 texture_progress = SubResource("AtlasTexture_uy8f0")
+
+[node name="Player" parent="." unique_id=2088542105 instance=ExtResource("4_6ioyp")]
+
+[node name="kalle" type="AnimatedSprite2D" parent="Player" unique_id=195142268]
+z_index = 10
+position = Vector2(-8, -24)
+sprite_frames = SubResource("SpriteFrames_6ioyp")
+animation = &"pull"
+centered = false
+
+[node name="MoveSound" type="AudioStreamPlayer" parent="Player" unique_id=841345701]
+stream = ExtResource("13_6r07y")
+volume_db = -13.448
+pitch_scale = 0.66
 
 [connection signal="pressed" from="UI/GameOverDim/RestartButton" to="." method="_on_restart_button_pressed"]
 [connection signal="pressed" from="UI/GameOverDim/MenuButton" to="." method="_on_menu_button_pressed"]
