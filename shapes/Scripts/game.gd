@@ -104,13 +104,13 @@ void fragment() {
 
 @export_group("Värvid")
 @export_range(0.0, 1.0) var color_strength := 1.0   # 0 = värv ei muutu, 1 = täielik
-@export var color_smooth := 10.0                     # kui kiiresti värv muutub (suurem = järsem)
-@export var color_falloff_px := 6                    # mitme px kaugusel ringist on joon täiesti "mööda" värvi
-@export var color_offset_px := 8                     # mitu px löögijoonest KÕRGEMAL värvimine algab (suurem = varem)
-@export var color_fade_px := 7                       # mitme px peal ülemine serv sujuvalt värviliseks läheb (0 = järsk)
+@export var color_smooth := 5.0                     # kui kiiresti värv muutub (suurem = järsem)
+@export var color_falloff_px := 8                    # mitme px kaugusel ringist on joon täiesti "mööda" värvi
+@export var color_offset_px := 4                     # mitu px löögijoonest KÕRGEMAL värvimine algab (suurem = varem)
+@export var color_fade_px := 2                       # mitme px peal ülemine serv sujuvalt värviliseks läheb (0 = järsk)
 
 @export_group("Debug")
-@export var debug_hitbox := false              # näita nõela hitbox-ringi
+@export var debug_hitbox := false          # näita nõela hitbox-ringi
 
 #endregion
 
