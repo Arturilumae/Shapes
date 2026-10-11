@@ -6,6 +6,11 @@ extends "res://Scripts/game.gd"
 @export var forgiving := true                 # no health drain in the tutorial
 @export_file("*.tscn") var next_scene := ""   # optional: scene to load after finishing
 
+@export_group("Tekstikast")
+@export var tutorial_label: Label             # lohista siia TutorialLabel
+@export var tutorial_box: Control             # lohista siia TutorialBox
+@export var done_text_time := 2.0             # mitu sekundit "done" tekst nähtav on
+
 const ALL_ACTIONS := ["ui_left", "ui_right", "hop_left", "hop_right"]
 
 # key = "<kind>_<direction>" of a transition
@@ -30,6 +35,7 @@ var current_key := ""
 var taught := {}              # lessons already shown
 var tutorial_done := false
 var label: Label
+var box: Control
 
 
 func _ready() -> void:
@@ -37,7 +43,8 @@ func _ready() -> void:
 		health_drain_rate = 0.0
 	super()
 	label = _get_or_make_label()
-	label.text = "Get ready…\nFollow the line with the needle."
+	box = tutorial_box if tutorial_box else get_node_or_null("%TutorialBox") as Control
+	_set_text("Get ready…\nFollow the line with the needle.")
 
 
 func _process(delta: float) -> void:
@@ -105,14 +112,15 @@ func _freeze(key: String, tr: Dictionary) -> void:
 	player.set_process(false)   # no held-arrow auto-moves while waiting
 
 	var lesson: Dictionary = LESSONS[key]
-	label.text = "%s\n%s" % [lesson["title"], lesson["text"] % _key_name(required_action)]
+	_set_text("%s\n%s" % [lesson["title"], lesson["text"] % _key_name(required_action)])
+
 
 func _unfreeze() -> void:
 	frozen = false
 	if use_music:
 		music.stream_paused = false
 	player.set_process(true)
-	label.text = LESSONS[current_key]["done"]
+	_set_text(LESSONS[current_key]["done"], done_text_time)
 
 
 ## Grading stays in game.gd; we only resume once the required move was started.
@@ -126,6 +134,20 @@ func _on_player_move_started(from_lane: int, to_lane: int, type: String) -> void
 
 #region Helpers
 
+## Näitab teksti kastis. Tühi tekst peidab kasti.
+## hide_after > 0: peida tekst nii mitme sekundi pärast (kui vahepeal uut teksti pole tulnud).
+func _set_text(t: String, hide_after := 0.0) -> void:
+	label.text = t
+	if box:
+		box.visible = t != ""
+	else:
+		label.visible = t != ""
+	if hide_after > 0.0:
+		await get_tree().create_timer(hide_after).timeout
+		if label.text == t and not frozen:
+			_set_text("")
+
+
 func _key_name(action: String) -> String:
 	for e in InputMap.action_get_events(action):
 		if e is InputEventKey:
@@ -134,15 +156,20 @@ func _key_name(action: String) -> String:
 
 
 func _get_or_make_label() -> Label:
-	var l := get_node_or_null("TutorialLabel") as Label
-	if l == null:
-		l = Label.new()
-		l.name = "TutorialLabel"
-		l.position = Vector2(4, 4)
-		l.size = Vector2(play_width - 8, 40)
-		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		l.z_index = 200
-		add_child(l)
+	if tutorial_label:
+		return tutorial_label
+	var l := get_node_or_null("%TutorialLabel") as Label
+	if l:
+		return l
+	# varuvariant, kui stseenis kasti pole
+	push_warning("TutorialLabel'it ei leitud, teen ajutise Labeli.")
+	l = Label.new()
+	l.name = "TutorialLabel"
+	l.position = Vector2(4, 4)
+	l.size = Vector2(play_width - 8, 40)
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	l.z_index = 200
+	add_child(l)
 	return l
 
 
@@ -151,7 +178,7 @@ func _finish() -> void:
 	playing = false
 	if use_music:
 		music.stop()
-	label.text = "Tutorial complete!\nAccuracy %d%%" % int(accuracy_percent())
+	_set_text("Tutorial complete!\nAccuracy %d%%" % int(accuracy_percent()))
 	if next_scene != "":
 		await get_tree().create_timer(3.0).timeout
 		get_tree().change_scene_to_file(next_scene)

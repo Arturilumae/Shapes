@@ -1,0 +1,21 @@
+{
+	"bpm": 100,
+	"offset": 0.0,
+	"notes": [
+		{"beat": 0,  "lane": 1, "length": 8},
+
+		{"beat": 8,  "lane": 2, "length": 6},
+		{"beat": 14, "lane": 1, "length": 6},
+		{"beat": 20, "lane": 0, "length": 6, "hop": true},
+		{"beat": 26, "lane": 1, "length": 6, "hop": true},
+
+		{"beat": 32, "lane": 2, "length": 4},
+		{"beat": 36, "lane": 3, "length": 4},
+		{"beat": 40, "lane": 2, "length": 4, "hop": true},
+		{"beat": 44, "lane": 1, "length": 4},
+		{"beat": 48, "lane": 2, "length": 4, "hop": true},
+		{"beat": 52, "lane": 1, "length": 4},
+		{"beat": 56, "lane": 0, "length": 4, "hop": true},
+		{"beat": 60, "lane": 1, "length": 6}
+	]
+}
