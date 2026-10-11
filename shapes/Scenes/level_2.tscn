@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cslxwqchcb20o" path="res://Scripts/game.gd" id="1_t7v2y"]
 [ext_resource type="Texture2D" uid="uid://b7cj6hdqv2fv5" path="res://Art/jooned.png" id="2_ait6c"]
-[ext_resource type="Texture2D" uid="uid://cfyvhb8cv4ird" path="res://Art/joonedvol2t.png" id="3_vcilj"]
+[ext_resource type="Texture2D" uid="uid://df4u2gxo8mem5" path="res://Art/joonedvol2t.png" id="3_vcilj"]
 [ext_resource type="PackedScene" uid="uid://dbkwdxovtqdhw" path="res://Scenes/player.tscn" id="4_bl0du"]
 [ext_resource type="Texture2D" uid="uid://bppuq2ogwhtw6" path="res://Art/ghost-idle.png" id="5_q0ycs"]
 [ext_resource type="Texture2D" uid="uid://bmg61ntaktv07" path="res://Art/ghost-push.png" id="6_hj5x7"]
@@ -218,14 +218,6 @@ animations = [{
 "speed": 20.0
 }]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_uud5k"]
-atlas = ExtResource("10_e2piv")
-region = Rect2(214, 63, 37, 75)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_c2wqx"]
-atlas = ExtResource("10_e2piv")
-region = Rect2(168, 64, 37, 75)
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_7wphs"]
 atlas = ExtResource("10_e2piv")
 region = Rect2(214, 6, 27, 6)
@@ -233,6 +225,14 @@ region = Rect2(214, 6, 27, 6)
 [sub_resource type="AtlasTexture" id="AtlasTexture_k2e45"]
 atlas = ExtResource("10_e2piv")
 region = Rect2(207, 20, 40, 7)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t7v2y"]
+atlas = ExtResource("10_e2piv")
+region = Rect2(214, 63, 37, 75)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ait6c"]
+atlas = ExtResource("10_e2piv")
+region = Rect2(168, 64, 37, 75)
 
 [node name="level_2" type="Node2D" unique_id=356827938]
 script = ExtResource("1_t7v2y")
@@ -247,6 +247,7 @@ color_offset_px = 15
 [node name="Track" type="Node2D" parent="." unique_id=66785672]
 
 [node name="Player" parent="." unique_id=2088542105 instance=ExtResource("4_bl0du")]
+z_index = 10
 
 [node name="kalle" type="AnimatedSprite2D" parent="Player" unique_id=48195227]
 z_index = 10
@@ -267,17 +268,6 @@ position = Vector2(128, 72)
 texture = ExtResource("9_i6dbo")
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=254836020]
-
-[node name="HealthBar" type="TextureProgressBar" parent="UI" unique_id=1184322789]
-unique_name_in_owner = true
-offset_left = 214.0
-offset_top = 63.0
-offset_right = 251.0
-offset_bottom = 138.0
-value = 50.0
-fill_mode = 3
-texture_over = SubResource("AtlasTexture_uud5k")
-texture_progress = SubResource("AtlasTexture_c2wqx")
 
 [node name="Score" type="TextureRect" parent="UI" unique_id=1858549867]
 offset_left = 218.0
@@ -328,3 +318,14 @@ theme_override_fonts/font = ExtResource("11_ijtdf")
 theme_override_font_sizes/font_size = 7
 text = "1"
 horizontal_alignment = 1
+
+[node name="HealthBar" type="TextureProgressBar" parent="." unique_id=1151946200]
+unique_name_in_owner = true
+offset_left = 214.0
+offset_top = 63.0
+offset_right = 251.0
+offset_bottom = 138.0
+value = 50.0
+fill_mode = 3
+texture_over = SubResource("AtlasTexture_t7v2y")
+texture_progress = SubResource("AtlasTexture_ait6c")
