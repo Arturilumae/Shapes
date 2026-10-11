@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://cgvyflpnaowuc"]
+[gd_scene format=3 uid="uid://cr0gkhh1mqisa"]
 
 [ext_resource type="Texture2D" uid="uid://busm5lom88pir" path="res://Art/mainScreene.png" id="1_df05h"]
 [ext_resource type="Texture2D" uid="uid://vgxqbl6fwk23" path="res://Art/buttons.png" id="2_8um5k"]
@@ -62,6 +62,7 @@ offset_bottom = 37.0
 texture_normal = SubResource("AtlasTexture_nvly8")
 texture_pressed = SubResource("AtlasTexture_0msvk")
 texture_hover = SubResource("AtlasTexture_nyimn")
+script = ExtResource("3_xim88")
 
 [node name="Sprite2D" type="Sprite2D" parent="Camera2D/Sprite2D2/Button2" unique_id=748432323]
 position = Vector2(30, 9)
@@ -76,6 +77,7 @@ offset_bottom = 61.0
 texture_normal = SubResource("AtlasTexture_nvly8")
 texture_pressed = SubResource("AtlasTexture_0msvk")
 texture_hover = SubResource("AtlasTexture_nyimn")
+script = ExtResource("3_xim88")
 
 [node name="Sprite2D" type="Sprite2D" parent="Camera2D/Sprite2D2/Button3" unique_id=1432526040]
 position = Vector2(32, 8)
@@ -89,4 +91,8 @@ volume_db = -10.0
 autoplay = true
 parameters/looping = false
 
+[connection signal="pressed" from="Camera2D/Sprite2D2/Button" to="Camera2D/Sprite2D2/Button" method="_on_pressed_play"]
 [connection signal="pressed" from="Camera2D/Sprite2D2/Button" to="Camera2D/Sprite2D2/Button" method="_on_pressed"]
+[connection signal="pressed" from="Camera2D/Sprite2D2/Button2" to="Camera2D/Sprite2D2/Button2" method="_on_pressed_settings"]
+[connection signal="pressed" from="Camera2D/Sprite2D2/Button2" to="Camera2D/Sprite2D2/Button2" method="_on_pressed"]
+[connection signal="pressed" from="Camera2D/Sprite2D2/Button3" to="Camera2D/Sprite2D2/Button3" method="_on_pressed_credits"]
