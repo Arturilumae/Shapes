@@ -1,11 +1,13 @@
 [gd_scene format=3 uid="uid://cr0gkhh1mqisa"]
 
-[ext_resource type="Texture2D" uid="uid://busm5lom88pir" path="res://Art/mainScreene.png" id="1_df05h"]
 [ext_resource type="Texture2D" uid="uid://vgxqbl6fwk23" path="res://Art/buttons.png" id="2_8um5k"]
 [ext_resource type="Script" uid="uid://cdskmsw07xeq5" path="res://Scripts/playButton.gd" id="3_xim88"]
 [ext_resource type="Texture2D" uid="uid://cdb0ly7lqkwbx" path="res://Art/text.png" id="4_koqhg"]
 [ext_resource type="AudioStream" uid="uid://q8o0f0jw3qck" path="res://levels/demo/maintheme.ogg" id="6_8um5k"]
 [ext_resource type="Texture2D" uid="uid://c5h3qysj4lgre" path="res://Art/Headphones.png" id="6_xim88"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_df05h"]
+load_path = "res://.godot/imported/mainScreene.png-db7a352d61b1efb7a693e13bfb9e1a34.ctex"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nvly8"]
 atlas = ExtResource("2_8um5k")
@@ -23,10 +25,6 @@ region = Rect2(41, 92, 62, 20)
 atlas = ExtResource("4_koqhg")
 region = Rect2(4, 5, 56, 15)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_57qmd"]
-atlas = ExtResource("4_koqhg")
-region = Rect2(6, 28, 47, 17)
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_yf5fn"]
 atlas = ExtResource("4_koqhg")
 region = Rect2(11, 52, 42, 15)
@@ -37,14 +35,14 @@ region = Rect2(11, 52, 42, 15)
 
 [node name="Sprite2D2" type="Sprite2D" parent="Camera2D" unique_id=2083720919]
 texture_filter = 1
-texture = ExtResource("1_df05h")
+texture = SubResource("CompressedTexture2D_df05h")
 
 [node name="Button" type="TextureButton" parent="Camera2D/Sprite2D2" unique_id=1410402240]
 texture_filter = 1
 offset_left = 47.0
-offset_top = -8.0
+offset_top = 1.0
 offset_right = 109.0
-offset_bottom = 12.0
+offset_bottom = 21.0
 texture_normal = SubResource("AtlasTexture_nvly8")
 texture_pressed = SubResource("AtlasTexture_0msvk")
 texture_hover = SubResource("AtlasTexture_nyimn")
@@ -54,27 +52,12 @@ script = ExtResource("3_xim88")
 position = Vector2(32, 10)
 texture = SubResource("AtlasTexture_g4v7s")
 
-[node name="Button2" type="TextureButton" parent="Camera2D/Sprite2D2" unique_id=257983640]
-texture_filter = 1
-offset_left = 47.0
-offset_top = 17.0
-offset_right = 109.0
-offset_bottom = 37.0
-texture_normal = SubResource("AtlasTexture_nvly8")
-texture_pressed = SubResource("AtlasTexture_0msvk")
-texture_hover = SubResource("AtlasTexture_nyimn")
-script = ExtResource("3_xim88")
-
-[node name="Sprite2D" type="Sprite2D" parent="Camera2D/Sprite2D2/Button2" unique_id=748432323]
-position = Vector2(30, 9)
-texture = SubResource("AtlasTexture_57qmd")
-
 [node name="Button3" type="TextureButton" parent="Camera2D/Sprite2D2" unique_id=1501913137]
 texture_filter = 1
 offset_left = 47.0
-offset_top = 41.0
+offset_top = 33.0
 offset_right = 109.0
-offset_bottom = 61.0
+offset_bottom = 53.0
 texture_normal = SubResource("AtlasTexture_nvly8")
 texture_pressed = SubResource("AtlasTexture_0msvk")
 texture_hover = SubResource("AtlasTexture_nyimn")
@@ -97,6 +80,4 @@ parameters/looping = false
 
 [connection signal="pressed" from="Camera2D/Sprite2D2/Button" to="Camera2D/Sprite2D2/Button" method="_on_pressed"]
 [connection signal="pressed" from="Camera2D/Sprite2D2/Button" to="Camera2D/Sprite2D2/Button" method="_on_pressed_play"]
-[connection signal="pressed" from="Camera2D/Sprite2D2/Button2" to="Camera2D/Sprite2D2/Button2" method="_on_pressed"]
-[connection signal="pressed" from="Camera2D/Sprite2D2/Button2" to="Camera2D/Sprite2D2/Button2" method="_on_pressed_settings"]
 [connection signal="pressed" from="Camera2D/Sprite2D2/Button3" to="Camera2D/Sprite2D2/Button3" method="_on_pressed_credits"]
