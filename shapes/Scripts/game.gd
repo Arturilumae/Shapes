@@ -781,12 +781,17 @@ func _on_song_finished() -> void:
 	if game_over_menu:
 		game_over_menu.visible = true
 		_set_buttons_visible(true) 
+		_play_loop(lose_animation, "lose")
 	  # nupud peitu animatsiooni ajaks
 	if "level_3" in level_dir.to_lower() or name.to_lower() == "level_3":
 		_set_buttons_visible(false) 
 		await _play_level3_win_cutscene()
 	elif win_animation:
-		await _play_once(win_anim_tuba, "win")
+		win_anim_tuba.visible = true
+		_set_buttons_visible(true)
+		_play_loop(win_animation, "win")
+		
+		
 
 	_set_buttons_visible(true)    # animatsioon läbi, nupud tagasi
 
