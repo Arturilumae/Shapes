@@ -1,6 +1,90 @@
 [gd_scene format=3 uid="uid://j0kn2hwgodik"]
 
 [ext_resource type="Script" uid="uid://dufa46lmvrw0h" path="res://Scripts/buttons.gd" id="1_chbko"]
+[ext_resource type="Texture2D" uid="uid://bptaqjmjtusx6" path="res://Art/levelSelecttaust.png" id="2_1cx81"]
+[ext_resource type="Texture2D" uid="uid://cwpsesui3hcms" path="res://Art/levelselectgost-Sheet.png" id="2_fo23m"]
+[ext_resource type="Texture2D" uid="uid://chn1328vigqp1" path="res://Art/levelSelectnuppudHover.png" id="3_8sr8g"]
+[ext_resource type="Texture2D" uid="uid://dpvummj11wu5u" path="res://Art/levelSelectnuppud1.png" id="4_045ii"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yf5fn"]
+atlas = ExtResource("4_045ii")
+region = Rect2(6, 0, 59, 85)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d0u6y"]
+atlas = ExtResource("3_8sr8g")
+region = Rect2(6, 0, 59, 85)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_57qmd"]
+atlas = ExtResource("4_045ii")
+region = Rect2(67, 0, 60, 85)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3gngh"]
+atlas = ExtResource("3_8sr8g")
+region = Rect2(67, 0, 60, 85)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fcnqv"]
+atlas = ExtResource("4_045ii")
+region = Rect2(128, 0, 58, 85)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7numd"]
+atlas = ExtResource("3_8sr8g")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1cx81"]
+atlas = ExtResource("2_fo23m")
+region = Rect2(0, 0, 260, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1qomi"]
+atlas = ExtResource("2_fo23m")
+region = Rect2(260, 0, 260, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8sr8g"]
+atlas = ExtResource("2_fo23m")
+region = Rect2(520, 0, 260, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_045ii"]
+atlas = ExtResource("2_fo23m")
+region = Rect2(780, 0, 260, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w36p5"]
+atlas = ExtResource("2_fo23m")
+region = Rect2(1040, 0, 260, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b56eh"]
+atlas = ExtResource("2_fo23m")
+region = Rect2(1300, 0, 260, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qwtt3"]
+atlas = ExtResource("2_fo23m")
+region = Rect2(1560, 0, 260, 144)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_g4v7s"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1cx81")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1qomi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8sr8g")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_045ii")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w36p5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b56eh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qwtt3")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 7.0
+}]
 
 [node name="LevelSelect" type="Control" unique_id=2113504259]
 layout_mode = 3
@@ -10,49 +94,44 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ColorRect" type="ColorRect" parent="." unique_id=1225694905]
-layout_mode = 0
-offset_right = 259.0
-offset_bottom = 149.0
-color = Color(0.47847533, 0.75564003, 0.82841986, 1)
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1060582431]
+position = Vector2(128, 72)
+texture = ExtResource("2_1cx81")
 
-[node name="ColorRect2" type="ColorRect" parent="ColorRect" unique_id=311094563]
-custom_minimum_size = Vector2(100, 100)
-layout_mode = 0
-offset_left = 14.0
-offset_top = 11.0
-offset_right = 242.0
-offset_bottom = 136.0
-color = Color(0.40392157, 0.22745098, 1, 1)
-
-[node name="GridContainer" type="GridContainer" parent="ColorRect" unique_id=1769550902]
-layout_mode = 0
-offset_left = 27.0
-offset_top = 32.0
-offset_right = 255.0
-offset_bottom = 132.0
+[node name="GridContainer" type="GridContainer" parent="Sprite2D" unique_id=1769550902]
+offset_left = -103.0
+offset_top = -42.0
+offset_right = 125.0
+offset_bottom = 58.0
 theme_override_constants/h_separation = 16
 columns = 4
 script = ExtResource("1_chbko")
 
-[node name="Button0" type="Button" parent="ColorRect/GridContainer" unique_id=1622224163]
+[node name="Button0" type="TextureButton" parent="Sprite2D/GridContainer" unique_id=1468784253]
 layout_mode = 2
-theme_override_font_sizes/font_size = 52
-text = "0"
+texture_normal = SubResource("AtlasTexture_yf5fn")
+texture_hover = SubResource("AtlasTexture_d0u6y")
 
-[node name="Button" type="Button" parent="ColorRect/GridContainer" unique_id=2043202988]
+[node name="Button" type="TextureButton" parent="Sprite2D/GridContainer" unique_id=221348269]
 layout_mode = 2
-theme_override_font_sizes/font_size = 52
-text = "1"
+texture_normal = SubResource("AtlasTexture_57qmd")
+texture_hover = SubResource("AtlasTexture_3gngh")
 
-[node name="Button2" type="Button" parent="ColorRect/GridContainer" unique_id=2000046109]
+[node name="Button2" type="TextureButton" parent="Sprite2D/GridContainer" unique_id=1301460411]
 layout_mode = 2
-theme_override_font_sizes/font_size = 52
-text = "2"
+texture_normal = SubResource("AtlasTexture_fcnqv")
+texture_hover = SubResource("AtlasTexture_7numd")
 
-[node name="Button3" type="Button" parent="ColorRect/GridContainer" unique_id=1396545066]
+[node name="Button3" type="Button" parent="Sprite2D/GridContainer" unique_id=1396545066]
 layout_mode = 2
 theme_override_font_sizes/font_size = 52
 text = "3"
 
-[connection signal="pressed" from="ColorRect/GridContainer/Button" to="ColorRect/GridContainer/Button" method="_on_pressed"]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Sprite2D" unique_id=1179529077]
+visible = false
+position = Vector2(3, 26)
+sprite_frames = SubResource("SpriteFrames_g4v7s")
+autoplay = "default"
+frame_progress = 0.2936841
+
+[connection signal="pressed" from="Sprite2D/GridContainer/Button" to="Sprite2D/GridContainer/Button" method="_on_pressed"]
