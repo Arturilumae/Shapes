@@ -7,8 +7,10 @@ extends Node2D
 ## pannakse kokku korduvatest tükkidest (mitte ei venitata).
 ##
 ## Hindamine:
-##   - sirged jooned: skoor ja täpsus raja järgi (mitu % ajast olid õigel rajal)
-##   - diagonaalid ja hüpped: täpsus liikumise alustamise ajastuse järgi (kaadrites)
+##   - täpsus: iga kaader, kui kaugel on nõela hitbox-ring joone keskjoonest
+##     (sama mõõt mis värvil ja eludel, kehtib ka diagonaalidel), ajaga kaalutud
+##   - diagonaalid ja hüpped: lisaks liikumise alustamise ajastus (kaadrites)
+##   - skoor: aeg õigel rajal + üleminekute ajastus
 ##   - elud: nõela hitbox-ringi kaugus joone keskjoonest (pikslites)
 
 
@@ -96,6 +98,10 @@ void fragment() {
 @export var line_left: Texture2D               # järsk tükk vasakule (53×3)
 @export var line_right: Texture2D              # järsk tükk paremale (53×3)
 
+@export_group("Täpsus")
+@export var accuracy_falloff_px := 4.0         # mitme px kaugusel ringi servast on täpsus 0% (vahepeal sujuvalt)
+@export var transition_weight := 0.25          # üks üleminek loeb täpsuses nii palju kui X sekundit joonel olekut
+
 @export_group("Värvid")
 @export_range(0.0, 1.0) var color_strength := 1.0   # 0 = värv ei muutu, 1 = täielik
 @export var color_smooth := 10.0                     # kui kiiresti värv muutub (suurem = järsem)
@@ -143,10 +149,8 @@ var geo_idx := 0              # esimene geo-lõik, mis pole veel täielikult mö
 
 # Hindamine
 var score := 0.0
-var acc_sum := 0.0            # kõigi hinnatud asjade (sirged + üleminekud) täpsuste summa
-var acc_count := 0            # mitu asja on hinnatud
-var on_current_line := 0.0    # praegusel sirgel joonel õigel rajal veedetud aeg
-var total_current_line := 0.0 # praeguse sirge joone hinnatud aeg kokku
+var acc_sum := 0.0            # täpsuse summa (joonel: hinne * aeg, üleminekud: hinne * transition_weight)
+var acc_weight := 0.0         # kogu kaal (sekundites), millega acc_sum jagatakse
 var last_diag := ""           # viimase ülemineku tulemus ekraanil
 
 # Elud
@@ -208,6 +212,7 @@ func _process(delta: float) -> void:
 	_expire_transitions(t)
 	_judge_straight_line(delta, t)
 	update_health(delta, t)
+	_judge_accuracy(delta)
 	update_line_color(delta)
 	_update_hud()
 
@@ -531,11 +536,6 @@ func _register_transitions(links: Array) -> void:
 func _advance_segments(t: float) -> void:
 	while current < segments.size() and segments[current]["hit_end"] <= t:
 		current += 1
-		if total_current_line > 0.0:
-			acc_sum += on_current_line / total_current_line
-			acc_count += 1
-		on_current_line = 0.0
-		total_current_line = 0.0
 
 
 ## Üleminekud, mille ajal mängija ei liikunud õigel ajal: 0%.
@@ -545,23 +545,37 @@ func _expire_transitions(t: float) -> void:
 		var tr: Dictionary = transitions[next_trans]
 		if not tr["done"]:
 			tr["done"] = true
-			acc_count += 1
+			_add_transition_accuracy(0.0)
 			grade_transition(tr, 0.0)
 			last_diag = "%s: 0%%" % _transition_label(tr)
 		next_trans += 1
 
 
-## Sirge joon löögijoonel: skoor, täpsus ja värv raja järgi.
+## Sirge joon löögijoonel: skoor raja järgi.
 ## (Ülemineku ajal on sirgete joonte vahel tühimik, siis ei hinnata.)
 func _judge_straight_line(delta: float, t: float) -> void:
 	if current >= segments.size() or segments[current]["hit_start"] > t:
 		return
 	var seg: Dictionary = segments[current]
-	total_current_line += delta
 	if player.lane == seg["lane"]:
-		on_current_line += delta
 		score += 100.0 * delta
 	_update_judge_label()
+
+
+## Täpsus iga kaader: kui kaugel on joone keskjoon nõela ringist.
+## Ringi sees = 100%, accuracy_falloff_px kaugusel ringi servast = 0%.
+## Kehtib sirgetel, diagonaalidel ja hüpetel ühtemoodi.
+func _judge_accuracy(delta: float) -> void:
+	if last_dist == INF:
+		return   # nõela all pole joont
+	var g := 1.0 - clampf((last_dist - hitbox_radius) / maxf(accuracy_falloff_px, 0.001), 0.0, 1.0)
+	acc_sum += g * delta
+	acc_weight += delta
+
+
+func _add_transition_accuracy(grade: float) -> void:
+	acc_sum += grade * transition_weight
+	acc_weight += transition_weight
 
 
 ## Mängija alustas liikumist teisele rajale (player.gd saadab selle signaali).
@@ -580,11 +594,11 @@ func _on_player_move_started(from_lane: int, to_lane: int, type: String) -> void
 		if signi(tr["to"] - tr["from"]) != dir:
 			continue  # vale suund
 		tr["done"] = true
-		acc_count += 1
 
 		# Diagonaal tuleb läbida tweeniga (nooled), järsk tükk hüppega (Q/E).
 		var needed := "tween" if tr["kind"] == "diag" else "hop"
 		if type != needed:
+			_add_transition_accuracy(0.0)
 			grade_transition(tr, 0.0)
 			last_diag = "%s: 0%% (vale liikumine)" % _transition_label(tr)
 			return
@@ -592,7 +606,7 @@ func _on_player_move_started(from_lane: int, to_lane: int, type: String) -> void
 		var frames := roundi(absf(t - tr["t"]) / FRAME)
 		var grade: float = DIAG_GRADES[frames] if frames < DIAG_GRADES.size() else 0.0
 		grade_transition(tr, grade)
-		acc_sum += grade
+		_add_transition_accuracy(grade)
 		score += 100.0 * grade
 		last_diag = "%s: %d%%" % [_transition_label(tr), int(grade * 100)]
 		return
@@ -609,7 +623,7 @@ func _transition_label(tr: Dictionary) -> String:
 
 
 func accuracy_percent() -> float:
-	return acc_sum / acc_count * 100.0 if acc_count > 0 else 0.0
+	return acc_sum / acc_weight * 100.0 if acc_weight > 0.0 else 100.0
 
 #endregion
 
@@ -746,12 +760,11 @@ func _update_hud() -> void:
 		score_label.text = "%06d" % int(score)
 	if accuracy_label:
 		# Enne esimest hinnatud joont näita 100%
-		var acc := accuracy_percent() if acc_count > 0 else 100.0
-		accuracy_label.text = "%d%%" % int(acc)
+		accuracy_label.text = "%d%%" % int(accuracy_percent())
 
 
 func _update_judge_label() -> void:
-	if judge_label and acc_count > 0:
+	if judge_label and acc_weight > 0.0:
 		judge_label.text = "täpsus %d%%\n%s" % [int(accuracy_percent()), last_diag]
 
 
