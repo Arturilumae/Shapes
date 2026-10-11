@@ -195,6 +195,7 @@ animations = [{
 
 [node name="recorder" type="Node2D" unique_id=1197249021]
 script = ExtResource("1_b88mk")
+song_path = "res://levels/demo/tuljak1.ogg"
 
 [node name="Music" type="AudioStreamPlayer" parent="." unique_id=1212440370]
 stream = ExtResource("2_b88mk")

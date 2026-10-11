@@ -10,7 +10,7 @@ extends Node2D
 @export var bpm := 94.00        # laulu BPM (nt Pythoni skripti väljundist)
 @export var offset := 0.604         # esimese löögi aeg sekundites
 @export var snap := 0.25           # mitme löögi täpsusega ümardatakse (1, 0.5, 0.25)
-@export var start_beat := 4.0     # varasemad liigutused jäetakse välja
+@export var start_beat := 0     # varasemad liigutused jäetakse välja
 @export var reaction := 0.001      # sinu reaktsiooniaeg sekundites, lahutatakse maha
 @export var output_path := "res://levels/demo/chart_recorded.json"
 

@@ -58,6 +58,15 @@ func _unhandled_input(event):
 func target_pos(l: int) -> Vector2:
 	return Vector2(game.lane_x(l), game.hit_line_y)
 
+func snap_to_lane(l: int) -> void: # Used in tutorial
+	if tween:
+		tween.kill()
+	moving = false
+	target_lane = l
+	position = target_pos(l)
+	set_lane(l, "tween")
+	noel.speed_scale = 1.0
+	noel.play("idle")
 
 func nearest_lane(x: float) -> int:
 	return clampi(roundi((x - game.lane_x0) / float(game.lane_spacing)), 0, LANES - 1)

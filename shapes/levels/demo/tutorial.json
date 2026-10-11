@@ -1,0 +1,21 @@
+{
+  "title": "tuljak1",
+  "audio": "tuljak1.ogg",
+  "bpm": 94.0,
+  "offset": 0.604,
+  "notes": [
+	{ "beat": 0.0, "lane": 2, "length": 3.25 },
+	{ "beat": 3.25, "lane": 3, "length": 3.0 },
+	{ "beat": 6.25, "lane": 2, "length": 2.75 },
+	{ "beat": 9.0, "lane": 3, "length": 1.5 },
+	{ "beat": 10.5, "lane": 2, "length": 2.0 },
+	{ "beat": 12.5, "lane": 1, "length": 2.75 },
+	{ "beat": 15.25, "lane": 2, "length": 1.25, "hop": true },
+	{ "beat": 16.5, "lane": 3, "length": 1.0, "hop": true },
+	{ "beat": 17.5, "lane": 2, "length": 0.75, "hop": true },
+	{ "beat": 18.25, "lane": 1, "length": 1.5, "hop": true },
+	{ "beat": 19.75, "lane": 2, "length": 1.25 },
+	{ "beat": 21.0, "lane": 3, "length": 1.25 },
+	{ "beat": 22.25, "lane": 2, "length": 1.25 }
+  ]
+}
