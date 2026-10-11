@@ -1,7 +1,7 @@
 {
   "title": "tuljak1",
   "audio": "tuljak1.ogg",
-  "bpm": 95.65,
+  "bpm": 94.00,
   "offset": 0.604,
   "notes": [
 	{ "beat": 4.0, "lane": 1, "length": 1.0, "hop": true },

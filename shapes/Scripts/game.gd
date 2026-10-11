@@ -124,6 +124,7 @@ void fragment() {
 @onready var health_bar: Range = get_node_or_null("%HealthBar")
 @onready var score_label: Label = get_node_or_null("%ScoreLabel")
 @onready var accuracy_label: Label = get_node_or_null("%AccuracyLabel")
+@onready var game_over_menu: ColorRect = get_node("%GameOverDim")
 
 #endregion
 
@@ -771,6 +772,8 @@ func _update_judge_label() -> void:
 func _on_song_finished() -> void:
 	playing = false
 	_update_judge_label()
+	if game_over_menu: 
+		game_over_menu.visible = true
 
 
 func game_over() -> void:
@@ -779,7 +782,7 @@ func game_over() -> void:
 		music.stop()
 	if judge_label:
 		judge_label.text = "MÄNG LÄBI!\nElud said otsa."
-	# Uuesti alustamiseks: get_tree().reload_current_scene()
+	game_over_menu.visible = true
 
 #endregion
 
@@ -874,3 +877,11 @@ class DebugOverlay extends Node2D:
 					draw_rect(Rect2(p + Vector2(dx, dy), Vector2.ONE), col)
 
 #endregion
+
+
+func _on_restart_button_pressed() -> void:
+	get_tree().reload_current_scene()
+
+
+func _on_menu_button_pressed() -> void:
+	get_tree().change_scene_to_file("res://Scenes/LevelSelect.tscn")
