@@ -1,7 +1,7 @@
 {
-  "title": "kaunimadlaulud",
-  "audio": "kaunimadlaulud.ogg",
-  "bpm": 95.65,
+  "title": "kunglarahvas_chart",
+  "audio": "kunglarahvasuus.ogg",
+  "bpm": 93.00,
   "offset": 0.604,
   "notes": [
 	{ "beat": 4.0, "lane": 2, "length": 2.5 }

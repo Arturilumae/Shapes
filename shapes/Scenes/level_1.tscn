@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://bppuq2ogwhtw6" path="res://Art/ghost-idle.png" id="5_oovug"]
 [ext_resource type="Texture2D" uid="uid://bmg61ntaktv07" path="res://Art/ghost-push.png" id="6_8i23i"]
 [ext_resource type="Texture2D" uid="uid://bsoddqumej7wl" path="res://Art/ghost-pull.png" id="7_8yhm2"]
+[ext_resource type="Texture2D" uid="uid://vgxqbl6fwk23" path="res://Art/buttons.png" id="8_6ioyp"]
 [ext_resource type="AudioStream" uid="uid://payvlo0xhfo7" path="res://levels/demo/tuljak1.ogg" id="8_pjppf"]
 [ext_resource type="Texture2D" uid="uid://dp5cqhws2qbt3" path="res://Art/taust.png" id="9_yltlr"]
 [ext_resource type="Texture2D" uid="uid://81d17xi7k6kw" path="res://Art/elud.png" id="10_6ssoq"]
@@ -39,6 +40,18 @@ region = Rect2(214, 6, 27, 6)
 [sub_resource type="AtlasTexture" id="AtlasTexture_k2e45"]
 atlas = ExtResource("10_6ssoq")
 region = Rect2(207, 20, 40, 7)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8yhm2"]
+atlas = ExtResource("8_6ioyp")
+region = Rect2(42, 59, 62, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pjppf"]
+atlas = ExtResource("8_6ioyp")
+region = Rect2(42, 29, 62, 19)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yltlr"]
+atlas = ExtResource("8_6ioyp")
+region = Rect2(41, 92, 62, 20)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jkdf5"]
 atlas = ExtResource("5_oovug")
@@ -309,6 +322,66 @@ theme_override_font_sizes/font_size = 7
 text = "1"
 horizontal_alignment = 1
 
+[node name="GameOverDim" type="ColorRect" parent="UI" unique_id=313027138]
+unique_name_in_owner = true
+visible = false
+offset_left = -48.0
+offset_top = -48.0
+offset_right = -8.0
+offset_bottom = -8.0
+scale = Vector2(16.405792, 12.863365)
+color = Color(0, 0, 0, 0.49411765)
+
+[node name="RestartButton" type="TextureButton" parent="UI/GameOverDim" unique_id=469124426]
+texture_filter = 1
+layout_mode = 0
+offset_left = 6.8268576
+offset_top = 7.4630547
+offset_right = 68.82686
+offset_bottom = 27.463055
+scale = Vector2(0.07290806, 0.08145282)
+texture_normal = SubResource("AtlasTexture_8yhm2")
+texture_pressed = SubResource("AtlasTexture_pjppf")
+texture_hover = SubResource("AtlasTexture_yltlr")
+
+[node name="Label" type="Label" parent="UI/GameOverDim/RestartButton" unique_id=519666327]
+texture_filter = 1
+layout_mode = 0
+offset_left = 11.704556
+offset_top = 4.7720976
+offset_right = 51.616634
+offset_bottom = 14.316291
+scale = Vector2(1.40905, 1.40905)
+theme_override_colors/font_color = Color(0.28627452, 0.1254902, 0.27058825, 1)
+theme_override_fonts/font = ExtResource("11_imks0")
+theme_override_font_sizes/font_size = 7
+text = "Restart"
+
+[node name="MenuButton" type="TextureButton" parent="UI/GameOverDim" unique_id=71920040]
+texture_filter = 1
+layout_mode = 0
+offset_left = 7.131628
+offset_top = 9.95074
+offset_right = 69.13163
+offset_bottom = 29.95074
+scale = Vector2(0.072908066, 0.081452824)
+texture_normal = SubResource("AtlasTexture_8yhm2")
+texture_pressed = SubResource("AtlasTexture_pjppf")
+texture_hover = SubResource("AtlasTexture_yltlr")
+
+[node name="Label" type="Label" parent="UI/GameOverDim/MenuButton" unique_id=91801775]
+texture_filter = 1
+layout_mode = 0
+offset_left = 16.720798
+offset_top = 4.7720976
+offset_right = 56.632877
+offset_bottom = 14.316291
+scale = Vector2(1.40905, 1.40905)
+theme_override_colors/font_color = Color(0.28627452, 0.1254902, 0.27058825, 1)
+theme_override_fonts/font = ExtResource("11_imks0")
+theme_override_font_sizes/font_size = 7
+text = "Back"
+
 [node name="Player" parent="." unique_id=2088542105 instance=ExtResource("4_6ioyp")]
 z_index = 10
 
@@ -329,3 +402,6 @@ value = 50.0
 fill_mode = 3
 texture_over = SubResource("AtlasTexture_af3po")
 texture_progress = SubResource("AtlasTexture_uy8f0")
+
+[connection signal="pressed" from="UI/GameOverDim/RestartButton" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="UI/GameOverDim/MenuButton" to="." method="_on_menu_button_pressed"]

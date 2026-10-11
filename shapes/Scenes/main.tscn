@@ -10,6 +10,9 @@
 [ext_resource type="Texture2D" uid="uid://dp5cqhws2qbt3" path="res://Art/taust.png" id="5_kry3j"]
 [ext_resource type="Texture2D" uid="uid://81d17xi7k6kw" path="res://Art/elud.png" id="6_21xkr"]
 [ext_resource type="Texture2D" uid="uid://bmg61ntaktv07" path="res://Art/ghost-push.png" id="6_d1ilt"]
+[ext_resource type="Texture2D" uid="uid://vgxqbl6fwk23" path="res://Art/buttons.png" id="6_jkdf5"]
+[ext_resource type="Script" uid="uid://cdskmsw07xeq5" path="res://Scripts/playButton.gd" id="7_wsu2k"]
+[ext_resource type="Texture2D" uid="uid://cdb0ly7lqkwbx" path="res://Art/text.png" id="8_k12tt"]
 [ext_resource type="FontFile" uid="uid://oxkynrojvw1d" path="res://Art/aseprite.otf" id="8_ynf5e"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ynf5e"]
@@ -39,6 +42,22 @@ region = Rect2(214, 6, 27, 6)
 [sub_resource type="AtlasTexture" id="AtlasTexture_k2e45"]
 atlas = ExtResource("6_21xkr")
 region = Rect2(207, 20, 40, 7)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_536cc"]
+atlas = ExtResource("6_jkdf5")
+region = Rect2(42, 59, 62, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aqgau"]
+atlas = ExtResource("6_jkdf5")
+region = Rect2(42, 29, 62, 19)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8cuat"]
+atlas = ExtResource("6_jkdf5")
+region = Rect2(41, 92, 62, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o1aky"]
+atlas = ExtResource("8_k12tt")
+region = Rect2(4, 5, 56, 15)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jkdf5"]
 atlas = ExtResource("4_hptm8")
@@ -308,6 +327,50 @@ theme_override_font_sizes/font_size = 7
 text = "1"
 horizontal_alignment = 1
 
+[node name="GameOverDim" type="ColorRect" parent="UI" unique_id=1245138148]
+unique_name_in_owner = true
+visible = false
+offset_left = -48.0
+offset_top = -48.0
+offset_right = -8.0
+offset_bottom = -8.0
+scale = Vector2(16.405792, 12.863365)
+color = Color(0, 0, 0, 0.49411765)
+
+[node name="MenuButton" type="TextureButton" parent="UI/GameOverDim" unique_id=1918272432]
+texture_filter = 1
+layout_mode = 0
+offset_left = 7.8021154
+offset_top = 36.074356
+offset_right = 69.80212
+offset_bottom = 56.074356
+scale = Vector2(1.0035182, 1)
+texture_normal = SubResource("AtlasTexture_536cc")
+texture_pressed = SubResource("AtlasTexture_aqgau")
+texture_hover = SubResource("AtlasTexture_8cuat")
+script = ExtResource("7_wsu2k")
+
+[node name="Sprite2D" type="Sprite2D" parent="UI/GameOverDim/MenuButton" unique_id=219671787]
+position = Vector2(32, 10)
+texture = SubResource("AtlasTexture_o1aky")
+
+[node name="RestartButton" type="TextureButton" parent="UI/GameOverDim" unique_id=1149560665]
+texture_filter = 1
+layout_mode = 0
+offset_left = 7.8021226
+offset_top = 7.074354
+offset_right = 69.802124
+offset_bottom = 27.074354
+scale = Vector2(1.0035182, 1)
+texture_normal = SubResource("AtlasTexture_536cc")
+texture_pressed = SubResource("AtlasTexture_aqgau")
+texture_hover = SubResource("AtlasTexture_8cuat")
+script = ExtResource("7_wsu2k")
+
+[node name="Sprite2D" type="Sprite2D" parent="UI/GameOverDim/RestartButton" unique_id=1732594721]
+position = Vector2(32, 10)
+texture = SubResource("AtlasTexture_o1aky")
+
 [node name="Player" parent="." unique_id=2088542105 instance=ExtResource("3_8gbba")]
 
 [node name="kalle" type="AnimatedSprite2D" parent="Player" unique_id=1172765365]
@@ -327,3 +390,6 @@ value = 50.0
 fill_mode = 3
 texture_over = SubResource("AtlasTexture_uud5k")
 texture_progress = SubResource("AtlasTexture_c2wqx")
+
+[connection signal="pressed" from="UI/GameOverDim/MenuButton" to="." method="_on_menu_button_pressed"]
+[connection signal="pressed" from="UI/GameOverDim/RestartButton" to="." method="_on_restart_button_pressed"]
