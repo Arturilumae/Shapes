@@ -4,7 +4,7 @@ extends "res://Scripts/game.gd"
 ## the correct key once. After that the chart plays on normally.
 
 @export var forgiving := true                 # no health drain in the tutorial
-@export_file("*.tscn") var next_scene := ""   # optional: scene to load after finishing
+@export_file("*.tscn") var next_scene := "res://Scenes/LevelSelect.tscn"   # optional: scene to load after finishing
 
 @export_group("Tekstikast")
 @export var tutorial_label: Label             # lohista siia TutorialLabel
