@@ -5,6 +5,9 @@
 [ext_resource type="Texture2D" uid="uid://cwpsesui3hcms" path="res://Art/levelselectgost-Sheet.png" id="2_fo23m"]
 [ext_resource type="Texture2D" uid="uid://chn1328vigqp1" path="res://Art/levelSelectnuppudHover.png" id="3_8sr8g"]
 [ext_resource type="Texture2D" uid="uid://dpvummj11wu5u" path="res://Art/levelSelectnuppud1.png" id="4_045ii"]
+[ext_resource type="Script" uid="uid://cdskmsw07xeq5" path="res://Scripts/playButton.gd" id="5_b56eh"]
+[ext_resource type="Texture2D" uid="uid://vgxqbl6fwk23" path="res://Art/buttons.png" id="6_w36p5"]
+[ext_resource type="FontFile" uid="uid://oxkynrojvw1d" path="res://Art/aseprite.otf" id="7_b56eh"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_yf5fn"]
 atlas = ExtResource("4_045ii")
@@ -24,48 +27,51 @@ region = Rect2(67, 0, 60, 85)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fcnqv"]
 atlas = ExtResource("4_045ii")
-region = Rect2(128, 0, 58, 85)
+region = Rect2(127, 0, 59, 85)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7numd"]
 atlas = ExtResource("3_8sr8g")
+region = Rect2(127, 0, 59, 85)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_1cx81"]
-atlas = ExtResource("2_fo23m")
-region = Rect2(0, 0, 260, 144)
+[sub_resource type="AtlasTexture" id="AtlasTexture_uud5k"]
+atlas = ExtResource("4_045ii")
+region = Rect2(189, 0, 59, 85)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_1qomi"]
-atlas = ExtResource("2_fo23m")
-region = Rect2(260, 0, 260, 144)
+[sub_resource type="AtlasTexture" id="AtlasTexture_c2wqx"]
+atlas = ExtResource("3_8sr8g")
+region = Rect2(189, 0, 59, 85)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_8sr8g"]
 atlas = ExtResource("2_fo23m")
-region = Rect2(520, 0, 260, 144)
+region = Rect2(5, 0, 259, 144)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_045ii"]
 atlas = ExtResource("2_fo23m")
-region = Rect2(780, 0, 260, 144)
+region = Rect2(264, 0, 259, 144)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_w36p5"]
 atlas = ExtResource("2_fo23m")
-region = Rect2(1040, 0, 260, 144)
+region = Rect2(523, 0, 259, 144)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_b56eh"]
 atlas = ExtResource("2_fo23m")
-region = Rect2(1300, 0, 260, 144)
+region = Rect2(782, 0, 259, 144)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qwtt3"]
 atlas = ExtResource("2_fo23m")
-region = Rect2(1560, 0, 260, 144)
+region = Rect2(1041, 0, 259, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rhsa1"]
+atlas = ExtResource("2_fo23m")
+region = Rect2(1300, 0, 259, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pp72x"]
+atlas = ExtResource("2_fo23m")
+region = Rect2(1559, 0, 259, 144)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_g4v7s"]
 animations = [{
 "frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_1cx81")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_1qomi")
-}, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_8sr8g")
 }, {
@@ -80,11 +86,25 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_qwtt3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rhsa1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pp72x")
 }],
-"loop": 1,
+"loop": 2,
 "name": &"default",
 "speed": 7.0
 }]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7wphs"]
+atlas = ExtResource("6_w36p5")
+region = Rect2(41, 92, 62, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3pu4w"]
+atlas = ExtResource("6_w36p5")
+region = Rect2(42, 59, 62, 20)
 
 [node name="LevelSelect" type="Control" unique_id=2113504259]
 layout_mode = 3
@@ -99,11 +119,15 @@ position = Vector2(128, 72)
 texture = ExtResource("2_1cx81")
 
 [node name="GridContainer" type="GridContainer" parent="Sprite2D" unique_id=1769550902]
-offset_left = -103.0
-offset_top = -42.0
-offset_right = 125.0
-offset_bottom = 58.0
-theme_override_constants/h_separation = 16
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -253.0
+offset_top = -71.0
+offset_right = 3.0
+offset_bottom = 73.0
+grow_horizontal = 2
+theme_override_constants/h_separation = 5
 columns = 4
 script = ExtResource("1_chbko")
 
@@ -111,27 +135,56 @@ script = ExtResource("1_chbko")
 layout_mode = 2
 texture_normal = SubResource("AtlasTexture_yf5fn")
 texture_hover = SubResource("AtlasTexture_d0u6y")
+script = ExtResource("5_b56eh")
 
 [node name="Button" type="TextureButton" parent="Sprite2D/GridContainer" unique_id=221348269]
 layout_mode = 2
 texture_normal = SubResource("AtlasTexture_57qmd")
 texture_hover = SubResource("AtlasTexture_3gngh")
+script = ExtResource("5_b56eh")
 
 [node name="Button2" type="TextureButton" parent="Sprite2D/GridContainer" unique_id=1301460411]
 layout_mode = 2
 texture_normal = SubResource("AtlasTexture_fcnqv")
 texture_hover = SubResource("AtlasTexture_7numd")
+script = ExtResource("5_b56eh")
 
-[node name="Button3" type="Button" parent="Sprite2D/GridContainer" unique_id=1396545066]
+[node name="button3" type="TextureButton" parent="Sprite2D/GridContainer" unique_id=1673518567]
 layout_mode = 2
-theme_override_font_sizes/font_size = 52
-text = "3"
+texture_normal = SubResource("AtlasTexture_uud5k")
+texture_hover = SubResource("AtlasTexture_c2wqx")
+script = ExtResource("5_b56eh")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Sprite2D" unique_id=1179529077]
-visible = false
-position = Vector2(3, 26)
+position = Vector2(15, 0)
+scale = Vector2(0.9846154, 1)
 sprite_frames = SubResource("SpriteFrames_g4v7s")
 autoplay = "default"
-frame_progress = 0.2936841
+frame = 5
+frame_progress = 0.068871036
 
+[node name="Backbutton" type="TextureButton" parent="Sprite2D" unique_id=1571547690]
+offset_left = -124.0
+offset_top = 39.0
+offset_right = -62.0
+offset_bottom = 59.0
+texture_normal = SubResource("AtlasTexture_7wphs")
+texture_hover = SubResource("AtlasTexture_3pu4w")
+script = ExtResource("5_b56eh")
+
+[node name="Label" type="Label" parent="Sprite2D/Backbutton" unique_id=437716217]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 3.0
+offset_right = 57.0
+offset_bottom = 26.0
+theme_override_fonts/font = ExtResource("7_b56eh")
+theme_override_font_sizes/font_size = 14
+text = "Back"
+
+[connection signal="pressed" from="Sprite2D/GridContainer/Button0" to="Sprite2D/GridContainer/Button0" method="_on_pressed_lvl0"]
 [connection signal="pressed" from="Sprite2D/GridContainer/Button" to="Sprite2D/GridContainer/Button" method="_on_pressed"]
+[connection signal="pressed" from="Sprite2D/GridContainer/Button" to="Sprite2D/GridContainer/Button" method="_on_pressed_lvl1"]
+[connection signal="pressed" from="Sprite2D/GridContainer/Button2" to="Sprite2D/GridContainer/Button2" method="_on_pressed_lvl2"]
+[connection signal="pressed" from="Sprite2D/GridContainer/button3" to="Sprite2D/GridContainer/button3" method="_on_pressed_lvl3"]
+[connection signal="pressed" from="Sprite2D/Backbutton" to="Sprite2D/Backbutton" method="_on_pressed_back"]

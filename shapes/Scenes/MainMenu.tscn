@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://vgxqbl6fwk23" path="res://Art/buttons.png" id="2_8um5k"]
 [ext_resource type="Script" uid="uid://cdskmsw07xeq5" path="res://Scripts/playButton.gd" id="3_xim88"]
 [ext_resource type="Texture2D" uid="uid://cdb0ly7lqkwbx" path="res://Art/text.png" id="4_koqhg"]
-[ext_resource type="AudioStream" uid="uid://q8o0f0jw3qck" path="res://maintheme.ogg" id="6_8um5k"]
+[ext_resource type="AudioStream" uid="uid://q8o0f0jw3qck" path="res://levels/demo/maintheme.ogg" id="6_8um5k"]
 [ext_resource type="Texture2D" uid="uid://c5h3qysj4lgre" path="res://Art/Headphones.png" id="6_xim88"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nvly8"]
@@ -95,8 +95,8 @@ volume_db = -10.0
 autoplay = true
 parameters/looping = false
 
-[connection signal="pressed" from="Camera2D/Sprite2D2/Button" to="Camera2D/Sprite2D2/Button" method="_on_pressed_play"]
 [connection signal="pressed" from="Camera2D/Sprite2D2/Button" to="Camera2D/Sprite2D2/Button" method="_on_pressed"]
-[connection signal="pressed" from="Camera2D/Sprite2D2/Button2" to="Camera2D/Sprite2D2/Button2" method="_on_pressed_settings"]
+[connection signal="pressed" from="Camera2D/Sprite2D2/Button" to="Camera2D/Sprite2D2/Button" method="_on_pressed_play"]
 [connection signal="pressed" from="Camera2D/Sprite2D2/Button2" to="Camera2D/Sprite2D2/Button2" method="_on_pressed"]
+[connection signal="pressed" from="Camera2D/Sprite2D2/Button2" to="Camera2D/Sprite2D2/Button2" method="_on_pressed_settings"]
 [connection signal="pressed" from="Camera2D/Sprite2D2/Button3" to="Camera2D/Sprite2D2/Button3" method="_on_pressed_credits"]
