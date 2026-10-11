@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://cdskmsw07xeq5" path="res://Scripts/playButton.gd" id="3_xim88"]
 [ext_resource type="Texture2D" uid="uid://cdb0ly7lqkwbx" path="res://Art/text.png" id="4_koqhg"]
 [ext_resource type="AudioStream" uid="uid://q8o0f0jw3qck" path="res://maintheme.ogg" id="6_8um5k"]
+[ext_resource type="Texture2D" uid="uid://c5h3qysj4lgre" path="res://Art/Headphones.png" id="6_xim88"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nvly8"]
 atlas = ExtResource("2_8um5k")
@@ -82,6 +83,9 @@ script = ExtResource("3_xim88")
 [node name="Sprite2D" type="Sprite2D" parent="Camera2D/Sprite2D2/Button3" unique_id=1432526040]
 position = Vector2(32, 8)
 texture = SubResource("AtlasTexture_yf5fn")
+
+[node name="Headphones" type="Sprite2D" parent="Camera2D/Sprite2D2" unique_id=321574340]
+texture = ExtResource("6_xim88")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1455518083]
 
