@@ -1,0 +1,161 @@
+[gd_scene format=3 uid="uid://6o63l0etbl5r"]
+
+[ext_resource type="Script" uid="uid://dlxx4knc66pts" path="res://Scripts/credits.gd" id="1_gryuy"]
+[ext_resource type="Texture2D" uid="uid://btt5sg1jylfr0" path="res://Art/gredid_sheet.png" id="2_ccovl"]
+[ext_resource type="FontFile" uid="uid://oxkynrojvw1d" path="res://Art/aseprite.otf" id="3_ccovl"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c1t8d"]
+atlas = ExtResource("2_ccovl")
+region = Rect2(0, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g4wvt"]
+atlas = ExtResource("2_ccovl")
+region = Rect2(261, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pjc1l"]
+atlas = ExtResource("2_ccovl")
+region = Rect2(522, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j6beo"]
+atlas = ExtResource("2_ccovl")
+region = Rect2(783, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4av4j"]
+atlas = ExtResource("2_ccovl")
+region = Rect2(1044, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5em78"]
+atlas = ExtResource("2_ccovl")
+region = Rect2(1305, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h30m1"]
+atlas = ExtResource("2_ccovl")
+region = Rect2(1566, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3mii5"]
+atlas = ExtResource("2_ccovl")
+region = Rect2(1827, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r4875"]
+atlas = ExtResource("2_ccovl")
+region = Rect2(2088, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g735x"]
+atlas = ExtResource("2_ccovl")
+region = Rect2(2349, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lnt0k"]
+atlas = ExtResource("2_ccovl")
+region = Rect2(2610, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_604bw"]
+atlas = ExtResource("2_ccovl")
+region = Rect2(2871, 0, 256, 144)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_uud5k"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c1t8d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g4wvt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pjc1l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j6beo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4av4j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5em78")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h30m1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3mii5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r4875")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g735x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lnt0k")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_604bw")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 10.0
+}]
+
+[sub_resource type="LabelSettings" id="LabelSettings_1bamb"]
+font = ExtResource("3_ccovl")
+font_size = 7
+
+[node name="Credits" type="Node2D" unique_id=198323091]
+script = ExtResource("1_gryuy")
+
+[node name="taust" type="AnimatedSprite2D" parent="." unique_id=645537431]
+position = Vector2(128, 72)
+sprite_frames = SubResource("SpriteFrames_uud5k")
+autoplay = "default"
+frame = 8
+frame_progress = 0.0016712812
+
+[node name="CreditsLabel" type="Label" parent="." unique_id=2027118164]
+offset_right = 256.0
+offset_bottom = 571.0
+theme_override_font_sizes/font_size = 7
+text = "EVICITION NOTICE: BEEPS AND BOOPS WITH JUSSIKE
+
+Art:
+Lilii-Ann Older
+Artur Ilumae
+
+Level Design:
+Jaagup Sulev
+Henry Hiire
+
+Programming:
+Kevin Noormets
+Rasmus Raie
+Artur Ilumae
+
+SFX & Music Mixing
+Jaagup Sulev
+
+Main Menu Theme:
+Rasmus Raie
+Jaagup Sulev
+
+Used songs:
+
+Tuljak
+2019 Estonian Song Festival Minu arm
+Miina Harma / Ferdinand Karlson
+conductor Ants Uleoja
+
+Kungla rahvas lauleldusest Uku ja Vanemuine
+2019 Estonian Song Festival Minu arm
+Karl August Hermann / Friedrich Kuhlbars
+orchestral arrangement Kristo Matson
+conductor Raul Talmar
+
+Kaunimad laulud
+2019 Estonian Song Festival Minu arm
+Friedrich August Saebelmann / Peeter Ruubel
+conductor Aarne Saluveer
+
+All songs sourced from arhiiv.err.ee
+
+Thank you for playing! :D"
+label_settings = SubResource("LabelSettings_1bamb")
+horizontal_alignment = 1
