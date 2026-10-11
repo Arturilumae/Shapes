@@ -128,6 +128,8 @@ void fragment() {
 @onready var lose_animation: AnimatedSprite2D = get_node_or_null("%LoseAnimation")
 @onready var glassbreaksfx: AudioStreamPlayer = get_node_or_null("%GlassBreakSFX")
 @onready var win_animation: AnimatedSprite2D = get_node_or_null("%WinAnimation")
+@onready var win_anim_tuba: AnimatedSprite2D = get_node_or_null("%WinAnimTuba")
+@onready var win_anim_sisemus: AnimatedSprite2D = get_node_or_null("%WinAnimSisemus")
 
 #endregion
 
@@ -775,11 +777,37 @@ func _update_judge_label() -> void:
 func _on_song_finished() -> void:
 	playing = false
 	_update_judge_label()
+	
 	if game_over_menu: 
 		game_over_menu.visible = true
-	if win_animation:
-		win_animation.visible = true
-		win_animation.play("win")
+		
+	# Kontrollime, kas praegu on Level 3 (vaatame kausta nime)
+	if "level_3" in level_dir.to_lower(): # Muuda "level3" enda õige kausta nime vastu!
+		_play_level3_win_cutscene()
+	else:
+		# Tavaliste levelite võiduanimatsioon
+		if win_animation:
+			win_animation.visible = true
+			win_animation.play("win")
+
+
+# UUS FUNKTSIOON: Level 3 spetsiaalne vaheklipp
+func _play_level3_win_cutscene() -> void:
+	if win_anim_tuba and win_anim_sisemus:
+		# 1. Näitame tuba
+		win_anim_tuba.visible = true
+		win_anim_tuba.play("tuba")
+		win_anim_sisemus.visible = false
+		
+		# Ootame 3 sekundit (et mängija saaks tuba vaadata)
+		await get_tree().create_timer(3.0).timeout
+		
+		# 2. Peidame toa ja näitame grammofoni sisemust
+		win_anim_tuba.visible = false
+		win_anim_sisemus.visible = true
+		win_anim_sisemus.play("sisemus")
+		
+
 
 
 func game_over() -> void:

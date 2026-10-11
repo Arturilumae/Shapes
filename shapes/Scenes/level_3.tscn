@@ -14,7 +14,9 @@
 [ext_resource type="Texture2D" uid="uid://bk4ed1hn21wyr" path="res://Art/endScene1-tuba-muusika.png" id="10_j77fg"]
 [ext_resource type="Texture2D" uid="uid://81d17xi7k6kw" path="res://Art/elud.png" id="10_s80er"]
 [ext_resource type="FontFile" uid="uid://oxkynrojvw1d" path="res://Art/aseprite.otf" id="11_8jhox"]
+[ext_resource type="Texture2D" uid="uid://dd5bylxbj3mbp" path="res://Art/endScene2-tuba-uksKinni.png" id="11_ki8bc"]
 [ext_resource type="Texture2D" uid="uid://vgxqbl6fwk23" path="res://Art/buttons.png" id="12_fxnjf"]
+[ext_resource type="Texture2D" uid="uid://ddxk14ahr7g5i" path="res://Art/endScene3-sleepHappy.png" id="12_nbwsh"]
 [ext_resource type="AudioStream" uid="uid://c5be46jjuhsnq" path="res://sfx/move.ogg" id="13_n4vm5"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ynf5e"]
@@ -156,6 +158,183 @@ animations = [{
 }],
 "loop": 1,
 "name": &"win",
+"speed": 5.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nbwsh"]
+atlas = ExtResource("11_ki8bc")
+region = Rect2(0, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hed5s"]
+atlas = ExtResource("11_ki8bc")
+region = Rect2(257, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yykrm"]
+atlas = ExtResource("11_ki8bc")
+region = Rect2(514, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2awvy"]
+atlas = ExtResource("11_ki8bc")
+region = Rect2(771, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nrv0r"]
+atlas = ExtResource("11_ki8bc")
+region = Rect2(1028, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gmj2a"]
+atlas = ExtResource("11_ki8bc")
+region = Rect2(1285, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n8e0l"]
+atlas = ExtResource("11_ki8bc")
+region = Rect2(1542, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3oi3s"]
+atlas = ExtResource("11_ki8bc")
+region = Rect2(1799, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rybab"]
+atlas = ExtResource("11_ki8bc")
+region = Rect2(2056, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g6bfm"]
+atlas = ExtResource("11_ki8bc")
+region = Rect2(2313, 0, 256, 144)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_8bpks"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nbwsh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hed5s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yykrm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2awvy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nrv0r")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gmj2a")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n8e0l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3oi3s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rybab")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g6bfm")
+}],
+"loop": 1,
+"name": &"tuba",
+"speed": 5.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ds67j"]
+atlas = ExtResource("12_nbwsh")
+region = Rect2(0, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tt48c"]
+atlas = ExtResource("12_nbwsh")
+region = Rect2(257, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3sjjq"]
+atlas = ExtResource("12_nbwsh")
+region = Rect2(514, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mtnpm"]
+atlas = ExtResource("12_nbwsh")
+region = Rect2(771, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f8et3"]
+atlas = ExtResource("12_nbwsh")
+region = Rect2(1028, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_acpig"]
+atlas = ExtResource("12_nbwsh")
+region = Rect2(1285, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s8di1"]
+atlas = ExtResource("12_nbwsh")
+region = Rect2(1542, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2yced"]
+atlas = ExtResource("12_nbwsh")
+region = Rect2(1799, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5l2vs"]
+atlas = ExtResource("12_nbwsh")
+region = Rect2(2056, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8kdlr"]
+atlas = ExtResource("12_nbwsh")
+region = Rect2(2313, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r5kqc"]
+atlas = ExtResource("12_nbwsh")
+region = Rect2(2570, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7wq3m"]
+atlas = ExtResource("12_nbwsh")
+region = Rect2(2827, 0, 256, 144)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k0ktw"]
+atlas = ExtResource("12_nbwsh")
+region = Rect2(3084, 0, 256, 144)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ds67j"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ds67j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tt48c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3sjjq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mtnpm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f8et3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_acpig")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s8di1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2yced")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5l2vs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8kdlr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r5kqc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7wq3m")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k0ktw")
+}],
+"loop": 1,
+"name": &"default",
 "speed": 5.0
 }]
 
@@ -467,6 +646,21 @@ position = Vector2(7.741719, -4.0060325)
 scale = Vector2(0.99999994, 1)
 sprite_frames = SubResource("SpriteFrames_nbwsh")
 animation = &"win"
+
+[node name="WinAnimTuba" type="AnimatedSprite2D" parent="UI/GameOverDim" unique_id=932585673]
+unique_name_in_owner = true
+visible = false
+position = Vector2(7.741719, -4.0060325)
+scale = Vector2(0.99999994, 1)
+sprite_frames = SubResource("SpriteFrames_8bpks")
+animation = &"tuba"
+
+[node name="WinAnimSisemus" type="AnimatedSprite2D" parent="UI/GameOverDim" unique_id=225466162]
+unique_name_in_owner = true
+visible = false
+position = Vector2(7.741719, -4.0060325)
+scale = Vector2(0.99999994, 1)
+sprite_frames = SubResource("SpriteFrames_ds67j")
 
 [node name="MenuButton" type="TextureButton" parent="UI/GameOverDim" unique_id=180670384]
 texture_filter = 1
