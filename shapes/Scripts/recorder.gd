@@ -7,11 +7,11 @@ extends Node2D
 ## Tühik = alusta, Esc = lõpeta ja salvesta (salvestab ka laulu lõppedes ise).
 
 @export var song_path := "res://levels/demo/kaunimadlaulud.ogg"
-@export var bpm := 80.00        # laulu BPM (nt Pythoni skripti väljundist)
+@export var bpm := 94.00        # laulu BPM (nt Pythoni skripti väljundist)
 @export var offset := 0.604         # esimese löögi aeg sekundites
-@export var snap := 0.5           # mitme löögi täpsusega ümardatakse (1, 0.5, 0.25)
+@export var snap := 0.25           # mitme löögi täpsusega ümardatakse (1, 0.5, 0.25)
 @export var start_beat := 4.0     # varasemad liigutused jäetakse välja
-@export var reaction := 0.05      # sinu reaktsiooniaeg sekundites, lahutatakse maha
+@export var reaction := 0.001      # sinu reaktsiooniaeg sekundites, lahutatakse maha
 @export var output_path := "res://levels/demo/chart_recorded.json"
 
 @export_group("Mängija jaoks (sama mis game.gd-s)")
