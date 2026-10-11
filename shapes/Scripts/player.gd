@@ -20,7 +20,7 @@ var tween: Tween
 
 @onready var game = get_parent()
 @onready var noel: AnimatedSprite2D = $kalle
-
+@onready var movesound: AudioStreamPlayer = $MoveSound
 
 func _ready():
 	position = target_pos(lane)
@@ -50,8 +50,10 @@ func _unhandled_input(event):
 		start_move(1)
 	# Hüpe: kiire libisemine teisele rajale
 	elif event.is_action_pressed("hop_left"):
+		movesound.play()
 		hop(-1)
 	elif event.is_action_pressed("hop_right"):
+		movesound.play()
 		hop(1)
 
 

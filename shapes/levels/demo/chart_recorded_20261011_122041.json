@@ -1,0 +1,30 @@
+{
+  "title": "kaunimadlaulud",
+  "audio": "kaunimadlaulud.ogg",
+  "bpm": 80.0,
+  "offset": 0.604,
+  "notes": [
+    { "beat": 0.0, "lane": 2, "length": 1.0 },
+    { "beat": 1.0, "lane": 3, "length": 0.75 },
+    { "beat": 1.75, "lane": 2, "length": 0.5 },
+    { "beat": 2.25, "lane": 1, "length": 1.0, "hop": true },
+    { "beat": 3.25, "lane": 2, "length": 1.0, "hop": true },
+    { "beat": 4.25, "lane": 3, "length": 0.75, "hop": true },
+    { "beat": 5.0, "lane": 2, "length": 0.5, "hop": true },
+    { "beat": 5.5, "lane": 1, "length": 0.5, "hop": true },
+    { "beat": 6.0, "lane": 2, "length": 1.75, "hop": true },
+    { "beat": 7.75, "lane": 1, "length": 0.75, "hop": true },
+    { "beat": 8.5, "lane": 2, "length": 0.25, "hop": true },
+    { "beat": 8.75, "lane": 1, "length": 0.25, "hop": true },
+    { "beat": 9.0, "lane": 2, "length": 0.5, "hop": true },
+    { "beat": 9.5, "lane": 3, "length": 0.5, "hop": true },
+    { "beat": 10.0, "lane": 2, "length": 0.25, "hop": true },
+    { "beat": 10.25, "lane": 1, "length": 0.5, "hop": true },
+    { "beat": 10.75, "lane": 0, "length": 0.5, "hop": true },
+    { "beat": 11.25, "lane": 1, "length": 0.25, "hop": true },
+    { "beat": 11.5, "lane": 0, "length": 0.5, "hop": true },
+    { "beat": 12.0, "lane": 1, "length": 0.5, "hop": true },
+    { "beat": 12.5, "lane": 0, "length": 0.25, "hop": true },
+    { "beat": 12.75, "lane": 1, "length": 1.25, "hop": true }
+  ]
+}
