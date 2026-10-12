@@ -285,7 +285,6 @@ func update_song_time(delta: float) -> void:
 		if music.playing:
 			song_time = music.get_playback_position() \
 				+ AudioServer.get_time_since_last_mix() \
-				- AudioServer.get_output_latency() \
 				+ audio_offset
 	else:
 		song_time += delta

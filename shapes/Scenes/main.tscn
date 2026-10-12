@@ -265,7 +265,7 @@ line_right = SubResource("AtlasTexture_fdnlq")
 
 [node name="Track" type="Node2D" parent="." unique_id=66785672]
 
-[node name="Music" type="AudioStreamPlayer2D" parent="." unique_id=707187183]
+[node name="Music" type="AudioStreamPlayer" parent="." unique_id=707187183]
 stream = ExtResource("3_jjvhh")
 
 [node name="BackGround" type="CanvasLayer" parent="." unique_id=1581122580]
