@@ -125,11 +125,8 @@ void fragment() {
 @onready var score_label: Label = get_node_or_null("%ScoreLabel")
 @onready var accuracy_label: Label = get_node_or_null("%AccuracyLabel")
 @onready var game_over_menu: ColorRect = get_node("%GameOverDim")
-@onready var lose_animation: AnimatedSprite2D = get_node_or_null("%LoseAnimation")
 @onready var glassbreaksfx: AudioStreamPlayer = get_node_or_null("%GlassBreakSFX")
-@onready var win_animation: AnimatedSprite2D = get_node_or_null("%WinAnimation")
-@onready var win_anim_tuba: AnimatedSprite2D = get_node_or_null("%WinAnimTuba")
-@onready var win_anim_sisemus: AnimatedSprite2D = get_node_or_null("%WinAnimSisemus")
+@onready var winlose_animation: AnimatedSprite2D = get_node_or_null("%WinLoseAnimation")
 @onready var menu_button: Control = get_node_or_null("%GameOverDim/MenuButton")
 @onready var restart_button: Control = get_node_or_null("%GameOverDim/RestartButton")
 
@@ -775,49 +772,29 @@ func _update_judge_label() -> void:
 
 
 func _on_song_finished() -> void:
-	_set_buttons_visible(false)
+	if not playing:
+		return   # juba läbi (nt kaotati enne)
 	playing = false
 	_update_judge_label()
 	if game_over_menu:
 		game_over_menu.visible = true
-		_set_buttons_visible(true) 
-		_play_loop(lose_animation, "lose")
-	  # nupud peitu animatsiooni ajaks
+	_set_buttons_visible(false)   # nupud peitu animatsiooni ajaks
+
 	if "level_3" in level_dir.to_lower() or name.to_lower() == "level_3":
-		_set_buttons_visible(false) 
 		await _play_level3_win_cutscene()
-	elif win_animation:
-		win_anim_tuba.visible = true
-		_set_buttons_visible(true)
-		_play_loop(win_animation, "win")
-		
-		
+	else:
+		_play_loop(winlose_animation, "win")
 
 	_set_buttons_visible(true)    # animatsioon läbi, nupud tagasi
 
 
 ## Level 3 vaheklipp: tuba, siis grammofoni sisemus
 func _play_level3_win_cutscene() -> void:
-	if not (win_anim_tuba and win_anim_sisemus):
-		return
-	win_animation.visible = true
-	await _play_once(win_animation, "win")
-	win_animation.visible = false
-	win_anim_tuba.visible = true
-	await _play_once(win_anim_tuba, "tuba")
-	win_anim_tuba.visible = false
-	win_anim_sisemus.visible = true
-	await _play_loop(win_anim_sisemus, "default")
-	
-	
-	
-
-	win_anim_tuba.visible = false
-	await _play_once(win_anim_sisemus, "sisemus")
-	# Viimane kaader jääb ekraanile (sisemus ei peitu)
-	
+	winlose_animation.visible = true
+	await _play_once(winlose_animation, "win")
+	await _play_once(winlose_animation, "tuba")
 	_set_buttons_visible(true)
-
+	await _play_loop(winlose_animation, "default")
 
 func game_over() -> void:
 	playing = false
@@ -828,13 +805,11 @@ func game_over() -> void:
 	game_over_menu.visible = true
 	_set_buttons_visible(false)   # nupud peitu animatsiooni ajaks
 
-	if lose_animation:
-		if glassbreaksfx:
-			glassbreaksfx.play()
-		await _play_once(lose_animation, "lose")
-
-	_set_buttons_visible(true)    # animatsioon läbi, nupud tagasi
-
+	
+	if glassbreaksfx:
+		glassbreaksfx.play()
+	_set_buttons_visible(true) 
+	await _play_once(winlose_animation, "lose")
 
 func _set_buttons_visible(v: bool) -> void:
 	if menu_button:
